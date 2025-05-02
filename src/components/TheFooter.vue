@@ -1,78 +1,69 @@
 <template>
   <!-- 页脚 -->
-  <footer class="bg-gray-800 py-12 text-white">
-    <div class="mx-auto px-4 container">
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
-        <div>
-          <h3 class="mb-4 text-xl font-bold">
-            萍乡洪星商贸有限公司
-          </h3>
-          <p class="mb-4 text-gray-400">
-            优质食品，健康生活
+  <footer class="bg-gray-900 px-4 py-12 text-white">
+    <div class="mx-auto max-w-7xl">
+      <div class="grid grid-cols-1 mb-8 gap-8 md:grid-cols-4">
+        <div class="col-span-1 md:col-span-2">
+          <div class="mb-4 flex items-center">
+            <div class="mr-3 h-10 w-10 flex items-center justify-center rounded-lg bg-sky-500 text-xl text-white font-bold">
+              宏
+            </div>
+            <span class="text-xl text-white font-bold">江西宏润配送有限公司</span>
+          </div>
+          <p class="mb-4 max-w-md text-gray-400">
+            专业的食品供应链和配送服务提供商，致力于为学校食堂等机构客户提供高品质的食品，确保每一份食材的新鲜与安全。
           </p>
           <div class="flex space-x-4">
-            <a href="#" class="text-gray-400 hover:text-white">
-              <i class="pi pi-facebook" />
+            <a href="#" class="h-10 w-10 flex items-center justify-center rounded-full bg-gray-800 transition-colors hover:bg-sky-500">
+              <i class="pi pi-phone" />
             </a>
-            <a href="#" class="text-gray-400 hover:text-white">
-              <i class="pi pi-twitter" />
+            <a href="#" class="h-10 w-10 flex items-center justify-center rounded-full bg-gray-800 transition-colors hover:bg-sky-500">
+              <i class="pi pi-envelope" />
             </a>
-            <a href="#" class="text-gray-400 hover:text-white">
-              <i class="pi pi-instagram" />
-            </a>
-            <a href="#" class="text-gray-400 hover:text-white">
-              <i class="pi pi-linkedin" />
+            <a href="#" class="h-10 w-10 flex items-center justify-center rounded-full bg-gray-800 transition-colors hover:bg-sky-500">
+              <i class="pi pi-map-marker" />
             </a>
           </div>
         </div>
 
         <div>
-          <h3 class="mb-4 text-lg font-semibold">
+          <h3 class="mb-4 text-lg font-bold">
             快速链接
           </h3>
           <ul class="space-y-2">
-            <li><a href="#" class="text-gray-400 hover:text-white">首页</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white">产品中心</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white">关于我们</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white">联系我们</a></li>
+            <li><a href="#" class="text-gray-400 transition-colors hover:text-sky-400">首页</a></li>
+            <li><a href="#" class="text-gray-400 transition-colors hover:text-sky-400">产品中心</a></li>
+            <li><a href="#" class="text-gray-400 transition-colors hover:text-sky-400">关于我们</a></li>
+            <li><a href="#" class="text-gray-400 transition-colors hover:text-sky-400">联系我们</a></li>
+            <li><a href="#" class="text-gray-400 transition-colors hover:text-sky-400">登录</a></li>
           </ul>
         </div>
 
         <div>
-          <h3 class="mb-4 text-lg font-semibold">
-            产品分类
+          <h3 class="mb-4 text-lg font-bold">
+            联系方式
           </h3>
-          <ul class="space-y-2">
-            <li><a href="#" class="text-gray-400 hover:text-white">休闲食品</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white">肉类制品</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white">海鲜鱼类</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white">地方特产</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 class="mb-4 text-lg font-semibold">
-            联系我们
-          </h3>
-          <ul class="text-gray-400 space-y-2">
-            <li class="flex items-start">
-              <i class="pi pi-map-marker mr-2 mt-1" />
-              <span>江西省萍乡市安源区城南农副产品批发大市场南门旁</span>
+          <ul class="space-y-4">
+            <li class="flex">
+              <i class="pi pi-map-marker mr-3 mt-1 text-sky-500" />
+              <span class="text-gray-400">江西省萍乡市安源区八一街汪公潭居委会公潭路</span>
             </li>
-            <li class="flex items-start">
-              <i class="pi pi-phone mr-2 mt-1" />
-              <span>0799-1234567</span>
+            <li class="flex">
+              <i class="pi pi-phone mr-3 mt-1 text-sky-500" />
+              <span class="text-gray-400">0791-xxxxxxx</span>
             </li>
-            <li class="flex items-start">
-              <i class="pi pi-envelope mr-2 mt-1" />
-              <span>contact@hongxing.com</span>
+            <li class="flex">
+              <i class="pi pi-envelope mr-3 mt-1 text-sky-500" />
+              <span class="text-gray-400">contact@jxhongrun.com</span>
             </li>
           </ul>
         </div>
       </div>
 
-      <div class="mt-8 border-t border-gray-700 pt-8 text-center text-gray-400">
-        <p>&copy; {{ new Date().getFullYear() }} 萍乡洪星商贸有限公司. 版权所有.</p>
+      <div class="border-t border-gray-800 pt-6 text-center">
+        <p class="text-gray-500">
+          © {{ new Date().getFullYear() }} 江西宏润配送有限公司 版权所有
+        </p>
       </div>
     </div>
   </footer>

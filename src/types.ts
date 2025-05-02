@@ -85,20 +85,14 @@ export enum Category {
   DumplingsAndBuns = '饺子与包点',
   Meatballs = '肉丸与贡丸',
   MeatProducts = '肉类制品',
-  SeafoodProducts = '海鲜与鱼类制品',
   Sausages = '香肠与热狗肠',
-  FrozenVegetables = '速冻蔬菜',
-  Snacks = '特色小吃与休闲食品',
 }
 
 export const CategoryList: Category[] = [
   Category.DumplingsAndBuns,
   Category.Meatballs,
   Category.MeatProducts,
-  Category.SeafoodProducts,
   Category.Sausages,
-  Category.FrozenVegetables,
-  Category.Snacks,
 ]
 
 export enum PackagingType {

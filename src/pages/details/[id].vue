@@ -1,794 +1,567 @@
-<script setup>
-import useVuelidate from '@vuelidate/core'
-import { minLength, required } from '@vuelidate/validators'
+<script setup lang="ts">
+import type { Product } from '~/types'
 import { products } from '~/data/products'
 
 const { params } = useRoute()
 
 // 模拟产品数据
-const product = ref(products.find(product => product.id === +params.id))
+const product = ref<Product>(products.find(p => p.id === +params.id)!)
 
-// 用户反馈表单
-const feedbackForm = ref({
-  name: '',
-  contact: '',
-  type: null,
-  message: '',
-  privacy: false,
-})
-
-const feedbackTypes = ref([
-  { name: '产品建议', code: 'suggestion' },
-  { name: '质量问题', code: 'quality' },
-  { name: '售后服务', code: 'service' },
-  { name: '其他', code: 'other' },
-])
-
-const rules = computed(() => ({
-  name: { required },
-  contact: { required },
-  type: { required },
-  message: { required, minLength: minLength(10) },
-  privacy: { required },
-}))
-
-const v$ = useVuelidate(rules, feedbackForm)
-const submitting = ref(false)
-const showSuccessDialog = ref(false)
-
-async function submitFeedback() {
-  const result = await v$.value.$validate()
-  if (!result) {
-    return
-  }
-
-  submitting.value = true
-  setTimeout(() => {
-    submitting.value = false
-    showSuccessDialog.value = true
-    feedbackForm.value = {
-      name: '',
-      contact: '',
-      type: null,
-      message: '',
-      privacy: false,
-    }
-    v$.value.$reset()
-  }, 1500)
+// 格式化日期
+function formatDate(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 }
 
-// 生命周期钩子
-onMounted(() => {
-  // 可以在这里加载产品数据
-  // 例如从API获取产品详情
+// 计算库存百分比
+const stockPercentage = computed(() => {
+  const maxStock = 1000 // 假设最大库存为1000
+  return Math.min(Math.round((product.value.stockQuantity / maxStock) * 100), 100)
+})
+
+// 库存状态
+const stockStatus = computed(() => {
+  const percentage = stockPercentage.value
+  if (percentage > 70)
+    return '库存充足'
+  if (percentage > 30)
+    return '库存适中'
+  return '库存紧张'
+})
+
+// 库存状态样式
+const stockStatusClass = computed(() => {
+  const percentage = stockPercentage.value
+  if (percentage > 70)
+    return 'text-green-600'
+  if (percentage > 30)
+    return 'text-yellow-600'
+  return 'text-red-600'
+})
+
+const relatedProducts = computed(() => {
+  return products.filter(p => p.category === product.value.category).slice(0, 4)
 })
 </script>
 
 <template>
   <MainLayout>
-    <div class="product-detail">
-      <!-- 产品基本信息 -->
-      <section class="bg-white py-8 md:py-12">
-        <div class="mx-auto px-4 container">
-          <Button label="返回" icon="pi pi-arrow-left" @click="$router.back()" />
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
-            <!-- 产品图片 -->
-            <div class="product-images">
-              <div class="relative mb-4 overflow-hidden rounded-lg bg-gray-50">
-                <img
-                  :src="product.image"
-                  :alt="product.name"
-                  class="aspect-square h-auto w-full object-contain"
-                >
-                <span
-                  v-if="isNewProduct"
-                  class="absolute left-4 top-4 rounded bg-green-500 px-2 py-1 text-xs text-white font-bold"
-                >
-                  新品
-                </span>
+    <div class="min-h-screen bg-gray-50">
+      <!-- 页面标题 -->
+      <section class="relative overflow-hidden from-blue-900 to-blue-800 bg-gradient-to-r py-12 text-white md:py-16">
+        <div class="absolute inset-0 opacity-10">
+          <div class="absolute inset-0 bg-repeat" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E');" />
+        </div>
+        <div class="relative z-10 mx-auto max-w-7xl px-4">
+          <div class="mb-2 flex items-center text-sm">
+            <a href="/" class="transition-colors hover:text-sky-300">首页</a>
+            <i class="pi pi-angle-right mx-2 text-xs" />
+            <a href="/products" class="transition-colors hover:text-sky-300">产品中心</a>
+            <i class="pi pi-angle-right mx-2 text-xs" />
+            <span>{{ product.name }}</span>
+          </div>
+          <h1 class="text-3xl font-bold md:text-4xl">
+            {{ product.name }}
+          </h1>
+        </div>
+        <!-- 波浪分隔符 -->
+        <div class="absolute bottom-0 left-0 right-0">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" class="h-auto w-full">
+            <path fill="#F9FAFB" fill-opacity="1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" />
+          </svg>
+        </div>
+      </section>
+
+      <!-- 产品详情内容 -->
+      <section class="px-4 py-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+            <!-- 左侧产品图片 -->
+            <div class="lg:col-span-5">
+              <div class="overflow-hidden rounded-xl bg-white shadow-md">
+                <div class="relative pb-[100%]">
+                  <img
+                    :src="product.image"
+                    :alt="product.name"
+                    class="absolute inset-0 h-full w-full object-cover"
+                  >
+                  <div class="absolute right-4 top-4">
+                    <span class="rounded-full bg-sky-500 px-3 py-1 text-xs text-white font-bold">
+                      {{ product.category }}
+                    </span>
+                  </div>
+                </div>
+                <div class="border-t border-gray-100 p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <i class="pi pi-eye mr-1 text-gray-500" />
+                      <span class="text-sm text-gray-500">1,234 次浏览</span>
+                    </div>
+                    <div class="flex space-x-2">
+                      <button class="h-8 w-8 flex items-center justify-center rounded-full bg-gray-100 transition-colors hover:bg-gray-200">
+                        <i class="pi pi-share-alt text-gray-600" />
+                      </button>
+                      <button class="h-8 w-8 flex items-center justify-center rounded-full bg-gray-100 transition-colors hover:bg-gray-200">
+                        <i class="pi pi-heart text-gray-600" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 认证与报告 -->
+              <div class="mt-6 rounded-xl bg-white p-6 shadow-md">
+                <h3 class="mb-4 flex items-center text-lg text-blue-900 font-bold">
+                  <i class="pi pi-verified mr-2 text-sky-500" />认证与报告
+                </h3>
+                <div class="grid grid-cols-2 gap-4">
+                  <div
+                    v-for="(cert, index) in product.certifications" :key="index"
+                    class="flex items-center rounded-lg bg-gray-50 p-3"
+                  >
+                    <i class="pi pi-check-circle mr-2 text-green-500" />
+                    <span class="text-sm text-gray-700">{{ cert }}</span>
+                  </div>
+                  <div v-if="product.testReport" class="flex items-center rounded-lg bg-gray-50 p-3">
+                    <i class="pi pi-file-pdf mr-2 text-red-500" />
+                    <a href="#" class="text-sm text-sky-600 hover:underline">检测报告</a>
+                  </div>
+                  <div v-if="product.productionLicense" class="flex items-center rounded-lg bg-gray-50 p-3">
+                    <i class="pi pi-id-card mr-2 text-blue-500" />
+                    <a href="#" class="text-sm text-sky-600 hover:underline">生产许可证</a>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- 产品信息 -->
-            <div class="product-info">
-              <h1 class="mb-4 text-2xl text-gray-800 font-bold md:text-3xl">
-                {{ product.name }}
-              </h1>
-
-              <div class="mb-4 flex items-center gap-2">
-                <span class="text-sm text-gray-500">品牌:</span>
-                <span class="text-sm text-gray-700 font-medium">{{ product.brand }}</span>
-                <Divider layout="vertical" class="mx-2" />
-                <span class="text-sm text-gray-500">产地:</span>
-                <span class="text-sm text-gray-700 font-medium">{{ product.origin }}</span>
-              </div>
-
-              <div class="mb-4">
-                <p class="text-gray-600">
+            <!-- 右侧产品信息 -->
+            <div class="lg:col-span-7">
+              <div class="mb-6 rounded-xl bg-white p-6 shadow-md">
+                <h2 class="mb-2 text-2xl text-blue-900 font-bold">
+                  {{ product.name }}
+                </h2>
+                <p class="mb-4 text-gray-600">
                   {{ product.description }}
                 </p>
-              </div>
 
-              <div class="mb-4 flex flex-wrap gap-2">
-                <Chip
-                  v-for="tag in product.tags"
-                  :key="tag"
-                  :label="tag"
-                  class="border-green-100 bg-green-50 text-green-600"
-                />
-              </div>
-
-              <Divider />
-
-              <div class="mb-4">
-                <div class="text-sm text-gray-700">
-                  <div class="mb-2 flex items-center gap-2">
-                    <i class="pi pi-box text-green-600" />
-                    <span>规格: {{ product.weight }} {{ product.weightUnit }}/{{ product.unit }}</span>
-                  </div>
-                  <div class="mb-2 flex items-center gap-2">
-                    <i class="pi pi-calendar text-green-600" />
-                    <span>保质期: {{ product.shelfLife }}</span>
-                  </div>
-                  <div class="mb-2 flex items-center gap-2">
-                    <i class="pi pi-tag text-green-600" />
-                    <span>商品编码: {{ product.sku }}</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <i class="pi pi-map-marker text-green-600" />
-                    <span>原产地: {{ product.origin }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 认证信息 -->
-              <div class="mb-6">
-                <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                  产品认证
-                </h3>
-                <div class="flex flex-wrap gap-3">
-                  <div
-                    v-for="(cert, index) in product.certifications"
-                    :key="index"
-                    class="flex flex-col items-center border rounded-lg p-3"
+                <div class="mb-4 flex flex-wrap gap-2">
+                  <span
+                    v-for="(tag, index) in product.tags" :key="index"
+                    class="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600"
                   >
-                    <!-- <img
-                    src="/certificate-placeholder.svg"
-                    alt="认证图标"
-                    class="mb-2 h-12 w-12"
-                  > -->
-                    <span class="text-sm text-gray-700 font-medium">{{ cert }}</span>
+                    {{ tag }}
+                  </span>
+                </div>
+
+                <div class="mb-4 border-t border-gray-100 pt-4">
+                  <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div class="flex items-center">
+                      <div class="mr-3 h-8 w-8 flex items-center justify-center rounded-full bg-blue-100">
+                        <i class="pi pi-tag text-blue-900" />
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-500">
+                          价格
+                        </p>
+                        <p class="text-lg text-blue-900 font-bold">
+                          ¥{{ product.price.toFixed(2) }} / {{ product.unit }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex items-center">
+                      <div class="mr-3 h-8 w-8 flex items-center justify-center rounded-full bg-blue-100">
+                        <i class="pi pi-box text-blue-900" />
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-500">
+                          规格
+                        </p>
+                        <p class="text-lg text-blue-900 font-bold">
+                          {{ product.weight }}{{ product.weightUnit }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex items-center">
+                      <div class="mr-3 h-8 w-8 flex items-center justify-center rounded-full bg-blue-100">
+                        <i class="pi pi-map-marker text-blue-900" />
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-500">
+                          产地
+                        </p>
+                        <p class="text-lg text-blue-900 font-bold">
+                          {{ product.origin }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex items-center">
+                      <div class="mr-3 h-8 w-8 flex items-center justify-center rounded-full bg-blue-100">
+                        <i class="pi pi-shopping-bag text-blue-900" />
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-500">
+                          包装方式
+                        </p>
+                        <p class="text-lg text-blue-900 font-bold">
+                          {{ product.packagingType }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex items-center">
+                      <div class="mr-3 h-8 w-8 flex items-center justify-center rounded-full bg-blue-100">
+                        <i class="pi pi-calendar text-blue-900" />
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-500">
+                          生产日期
+                        </p>
+                        <p class="text-lg text-blue-900 font-bold">
+                          {{ formatDate(product.date) }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex items-center">
+                      <div class="mr-3 h-8 w-8 flex items-center justify-center rounded-full bg-blue-100">
+                        <i class="pi pi-clock text-blue-900" />
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-500">
+                          保质期
+                        </p>
+                        <p class="text-lg text-blue-900 font-bold">
+                          {{ product.shelfLife }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-4 border-t border-gray-100 pt-4">
+                  <h3 class="mb-3 text-lg text-blue-900 font-bold">
+                    库存状态
+                  </h3>
+                  <div class="flex items-center">
+                    <div class="h-2 flex-1 overflow-hidden rounded-full bg-gray-200">
+                      <div class="h-full bg-green-500" :style="{ width: `${stockPercentage}%` }" />
+                    </div>
+                    <span class="ml-3 text-sm font-medium" :class="stockStatusClass">{{ stockStatus }}</span>
+                  </div>
+                </div>
+
+                <div class="border-t border-gray-100 pt-4">
+                  <div class="flex flex-wrap gap-4">
+                    <Button label="立即咨询" icon="pi pi-comments" class="border-blue-900 bg-blue-900" />
+                    <Button label="获取报价" icon="pi pi-file-o" outlined class="border-blue-900 text-blue-900" />
+                    <Button label="下载资料" icon="pi pi-download" text />
                   </div>
                 </div>
               </div>
 
-              <!-- 产品特点 -->
-              <div class="rounded-lg bg-gray-50 p-4">
-                <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                  产品特点
-                </h3>
-                <ul class="space-y-2">
-                  <li class="flex items-start gap-2">
-                    <i class="pi pi-check-circle mt-0.5 text-green-500" />
-                    <span class="text-sm text-gray-600">精选优质原材料，品质保证</span>
-                  </li>
-                  <li class="flex items-start gap-2">
-                    <i class="pi pi-check-circle mt-0.5 text-green-500" />
-                    <span class="text-sm text-gray-600">传统工艺结合现代技术，保留原有营养</span>
-                  </li>
-                  <li class="flex items-start gap-2">
-                    <i class="pi pi-check-circle mt-0.5 text-green-500" />
-                    <span class="text-sm text-gray-600">严格质量控制，安全可靠</span>
-                  </li>
-                  <li class="flex items-start gap-2">
-                    <i class="pi pi-check-circle mt-0.5 text-green-500" />
-                    <span class="text-sm text-gray-600">多种认证，符合国家食品安全标准</span>
-                  </li>
-                </ul>
+              <!-- 详细信息标签页 -->
+              <div class="overflow-hidden rounded-xl bg-white shadow-md">
+                <TabView>
+                  <TabPanel header="产品概述">
+                    <div class="p-6">
+                      <h3 class="mb-4 text-lg text-blue-900 font-bold">
+                        产品介绍
+                      </h3>
+                      <p class="mb-6 text-gray-700">
+                        {{ product.description }}
+                      </p>
+
+                      <h3 class="mb-4 text-lg text-blue-900 font-bold">
+                        品牌信息
+                      </h3>
+                      <div class="mb-6 flex items-center">
+                        <div class="mr-4 h-12 w-12 flex items-center justify-center rounded-lg bg-gray-100">
+                          <i class="pi pi-building text-xl text-blue-900" />
+                        </div>
+                        <div>
+                          <p class="text-gray-800 font-bold">
+                            {{ product.brand }}
+                          </p>
+                          <p class="text-sm text-gray-600">
+                            品牌来自{{ product.origin }}
+                          </p>
+                        </div>
+                      </div>
+
+                      <h3 class="mb-4 text-lg text-blue-900 font-bold">
+                        产品特点
+                      </h3>
+                      <div class="grid grid-cols-1 mb-6 gap-4 md:grid-cols-2">
+                        <div
+                          v-for="(characteristic, index) in product.processCharacteristics" :key="index"
+                          class="flex items-start"
+                        >
+                          <div class="mr-3 h-8 w-8 flex flex-shrink-0 items-center justify-center rounded-full bg-sky-100">
+                            <i class="pi pi-star text-sky-500" />
+                          </div>
+                          <div>
+                            <h4 class="mb-1 text-gray-800 font-bold">
+                              {{ characteristic.name }}
+                            </h4>
+                            <p class="text-sm text-gray-600">
+                              {{ characteristic.description }}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <h3 class="mb-4 text-lg text-blue-900 font-bold">
+                        储存方法
+                      </h3>
+                      <div class="mb-6 rounded-lg bg-gray-50 p-4">
+                        <p class="text-gray-700">
+                          {{ product.storageMethod }}
+                        </p>
+                      </div>
+                    </div>
+                  </TabPanel>
+
+                  <TabPanel header="营养成分">
+                    <div class="p-6">
+                      <h3 class="mb-4 text-lg text-blue-900 font-bold">
+                        营养信息
+                      </h3>
+                      <p class="mb-4 text-gray-700">
+                        {{ product.nutritionalInfo.description }}
+                      </p>
+                      <p class="mb-4 text-sm text-gray-500">
+                        {{ product.nutritionalInfo.gContent }}
+                      </p>
+
+                      <div class="rounded-lg bg-gray-50 p-6">
+                        <table class="w-full">
+                          <thead>
+                            <tr class="border-b border-gray-200">
+                              <th class="py-2 text-left text-gray-700">
+                                营养成分
+                              </th>
+                              <th class="py-2 text-right text-gray-700">
+                                含量
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr
+                              v-for="(ingredient, index) in product.nutritionalInfo.ingredients" :key="index"
+                              class="border-b border-gray-200"
+                            >
+                              <td class="py-3 text-gray-800">
+                                {{ ingredient.name }}
+                              </td>
+                              <td class="py-3 text-right text-gray-800">
+                                {{ ingredient.weight }}{{ ingredient.unit }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </TabPanel>
+
+                  <TabPanel header="原材料成分">
+                    <div class="p-6">
+                      <h3 class="mb-4 text-lg text-blue-900 font-bold">
+                        原材料信息
+                      </h3>
+
+                      <div class="space-y-6">
+                        <div
+                          v-for="(material, index) in product.rawMaterials" :key="index"
+                          class="rounded-lg bg-gray-50 p-6"
+                        >
+                          <h4 class="mb-2 text-lg text-blue-900 font-bold">
+                            {{ material.name }}
+                          </h4>
+                          <p class="mb-4 text-gray-700">
+                            {{ material.description }}
+                          </p>
+
+                          <div class="grid grid-cols-1 mb-4 gap-4 md:grid-cols-3">
+                            <div class="rounded-lg bg-white p-4 shadow-sm">
+                              <p class="mb-1 text-sm text-gray-500">
+                                产地
+                              </p>
+                              <p class="text-gray-800 font-medium">
+                                {{ material.origin }}
+                              </p>
+                            </div>
+                          </div>
+
+                          <h5 class="mb-3 text-gray-800 font-bold">
+                            成分详情
+                          </h5>
+                          <div class="rounded-lg bg-white p-4 shadow-sm">
+                            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                              <div>
+                                <p class="mb-1 text-sm text-gray-500">
+                                  成分名称
+                                </p>
+                                <p class="text-gray-800 font-medium">
+                                  {{ material.ingredient.name }}
+                                </p>
+                              </div>
+                              <div>
+                                <p class="mb-1 text-sm text-gray-500">
+                                  来源
+                                </p>
+                                <p class="text-gray-800 font-medium">
+                                  {{ material.ingredient.origin }}
+                                </p>
+                              </div>
+                              <div>
+                                <p class="mb-1 text-sm text-gray-500">
+                                  功能
+                                </p>
+                                <p class="text-gray-800 font-medium">
+                                  {{ material.ingredient.function }}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </TabPanel>
+
+                  <TabPanel header="生产工艺">
+                    <div class="p-6">
+                      <h3 class="mb-4 text-lg text-blue-900 font-bold">
+                        生产流程
+                      </h3>
+
+                      <div class="relative">
+                        <!-- 时间线 -->
+                        <div class="absolute bottom-0 left-8 top-0 hidden w-1 bg-blue-200 md:block" />
+
+                        <div class="space-y-8">
+                          <div v-for="(step, index) in product.productionSteps" :key="index" class="relative">
+                            <div class="flex items-start">
+                              <div class="relative z-10 mr-4 h-16 w-16 flex flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
+                                <span class="text-xl text-blue-900 font-bold">{{ index + 1 }}</span>
+                              </div>
+                              <div class="flex-1 rounded-lg bg-gray-50 p-6">
+                                <h4 class="mb-2 text-lg text-blue-900 font-bold">
+                                  {{ step.name }}
+                                </h4>
+                                <p class="text-gray-700">
+                                  {{ step.description }}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <h3 class="mb-4 mt-8 text-lg text-blue-900 font-bold">
+                        工艺特点
+                      </h3>
+                      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <div
+                          v-for="(characteristic, index) in product.processCharacteristics" :key="index"
+                          class="rounded-lg bg-gray-50 p-6"
+                        >
+                          <h4 class="mb-2 text-gray-800 font-bold">
+                            {{ characteristic.name }}
+                          </h4>
+                          <p class="text-gray-700">
+                            {{ characteristic.description }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </TabPanel>
+
+                  <TabPanel header="烹饪提示">
+                    <div class="p-6">
+                      <h3 class="mb-4 text-lg text-blue-900 font-bold">
+                        烹饪建议
+                      </h3>
+
+                      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <div
+                          v-for="(tip, index) in product.cookingTips" :key="index"
+                          class="rounded-lg bg-gray-50 p-6"
+                        >
+                          <div class="flex items-start">
+                            <div class="mr-4 h-10 w-10 flex flex-shrink-0 items-center justify-center rounded-full bg-sky-100">
+                              <i class="pi pi-info-circle text-sky-500" />
+                            </div>
+                            <p class="text-gray-700">
+                              {{ tip }}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </TabPanel>
+                </TabView>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 产品详情选项卡 -->
-      <section class="bg-gray-50 py-8 md:py-12">
-        <div class="mx-auto px-4 container">
-          <TabView>
-            <TabPanel header="产品详情">
-              <div class="rounded-lg bg-white p-6 shadow-sm">
-                <div class="rich-text space-y-6">
-                  <h2 class="mb-4 text-xl text-gray-800 font-bold">
-                    产品详情
-                  </h2>
+      <!-- 相关产品推荐 -->
+      <section class="bg-gray-100 px-4 py-12">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-8 flex items-center justify-between">
+            <h2 class="text-2xl text-blue-900 font-bold">
+              相关产品推荐
+            </h2>
+            <Button label="查看更多" icon="pi pi-arrow-right" text class="text-blue-900" />
+          </div>
 
-                  <div class="mb-6">
-                    <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                      产品介绍
-                    </h3>
-                    <p class="text-gray-700">
-                      {{ product.description }}
-                    </p>
-                  </div>
-
-                  <div class="mb-6">
-                    <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                      原料
-                    </h3>
-                    <p class="text-gray-700">
-                      {{ product.rawMaterials.map(r => r.name).join('、') }}
-                    </p>
-                  </div>
-
-                  <div class="mb-6">
-                    <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                      烹饪小贴士
-                    </h3>
-                    <ul class="list-disc pl-5 space-y-2">
-                      <li v-for="(tip, index) in product.cookingTips" :key="index" class="text-gray-700">
-                        {{ tip }}
-                      </li>
-                    </ul>
-                  </div>
-
-                  <!-- 产品图片展示 -->
-                  <!-- <div class="grid grid-cols-1 my-8 gap-4 md:grid-cols-2">
-                  <img
-                    src="/placeholder.svg"
-                    alt="产品展示图"
-                    class="h-auto w-full rounded-lg"
-                  >
-                  <img
-                    src="/placeholder.svg"
-                    alt="产品展示图"
-                    class="h-auto w-full rounded-lg"
-                  >
-                  </div> -->
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-4 md:grid-cols-2">
+            <div
+              v-for="p, i in relatedProducts" :key="i"
+              class="overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg"
+            >
+              <div class="relative">
+                <img :src="p.image" alt="相关产品" class="h-48 w-full object-cover">
+                <div class="absolute right-0 top-0 m-2">
+                  <span class="rounded-full bg-sky-500 px-2 py-1 text-xs text-white font-bold">
+                    {{ p.category }}
+                  </span>
                 </div>
               </div>
-            </TabPanel>
-
-            <TabPanel header="材料信息">
-              <div class="rounded-lg bg-white p-6 shadow-sm">
-                <h2 class="mb-4 text-xl text-gray-800 font-bold">
-                  材料信息
-                </h2>
-
-                <div class="mb-8">
-                  <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                    原材料来源
-                  </h3>
-
-                  <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div v-for="{ origin, description, name } of product.rawMaterials" :key="name" class="rounded-lg bg-gray-50 p-4">
-                      <h4 class="mb-2 text-gray-800 font-medium">
-                        {{ origin }}
-                      </h4>
-                      <p class="text-gray-600">
-                        {{ description }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mb-8">
-                  <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                    原材料成分
-                  </h3>
-                  <div class="overflow-x-auto">
-                    <table class="min-w-full border-collapse">
-                      <thead>
-                        <tr class="bg-gray-100">
-                          <th class="px-4 py-3 text-left text-gray-700 font-semibold">
-                            成分名称
-                          </th>
-                          <th class="px-4 py-3 text-left text-gray-700 font-semibold">
-                            来源
-                          </th>
-                          <th class="px-4 py-3 text-left text-gray-700 font-semibold">
-                            功能
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="{ name, origin, function: f } of product.rawMaterials.map(r => r.ingredient)" :key="name" class="border-b">
-                          <td class="px-4 py-3 text-gray-700">
-                            {{ name }}
-                          </td>
-                          <td class="px-4 py-3 text-gray-700">
-                            {{ origin }}
-                          </td>
-                          <td class="px-4 py-3 text-gray-700">
-                            {{ f }}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                    不含成分
-                  </h3>
-                  <div class="grid grid-cols-2 gap-3 md:grid-cols-4 sm:grid-cols-3">
-                    <div class="flex items-center gap-2 rounded-lg bg-red-50 p-2">
-                      <i class="pi pi-times-circle text-red-500" />
-                      <span class="text-sm text-gray-700">人工色素</span>
-                    </div>
-                    <div class="flex items-center gap-2 rounded-lg bg-red-50 p-2">
-                      <i class="pi pi-times-circle text-red-500" />
-                      <span class="text-sm text-gray-700">人工香精</span>
-                    </div>
-                    <div class="flex items-center gap-2 rounded-lg bg-red-50 p-2">
-                      <i class="pi pi-times-circle text-red-500" />
-                      <span class="text-sm text-gray-700">防腐剂</span>
-                    </div>
-                    <div class="flex items-center gap-2 rounded-lg bg-red-50 p-2">
-                      <i class="pi pi-times-circle text-red-500" />
-                      <span class="text-sm text-gray-700">转基因成分</span>
-                    </div>
-                  </div>
+              <div class="p-4">
+                <h3 class="mb-1 text-lg text-blue-900 font-bold">
+                  {{ p.name }}
+                </h3>
+                <p class="line-clamp-2 mb-3 text-sm text-gray-600">
+                  {{ p.description }}
+                </p>
+                <div class="flex items-center justify-between">
+                  <span class="text-sky-600 font-bold">¥{{ p.price }} / {{ p.unit }}</span>
+                  <Button label="查看详情" icon="pi pi-eye" class="p-button-sm border-blue-900 bg-blue-900" />
                 </div>
               </div>
-            </TabPanel>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <TabPanel header="生产过程">
-              <div class="rounded-lg bg-white p-6 shadow-sm">
-                <h2 class="mb-6 text-xl text-gray-800 font-bold">
-                  生产过程
-                </h2>
-
-                <div class="mb-8">
-                  <div class="relative">
-                    <!-- 生产流程图 -->
-                    <div class="production-flow">
-                      <div class="flow-timeline">
-                        <div class="flow-line" />
-                        <div class="flow-steps">
-                          <div v-for="{ name, description }, i of product.productionSteps" :key="i" class="flow-step">
-                            <div class="flow-step-icon bg-green-500 text-white">
-                              {{ i + 1 }}
-                            </div>
-                            <div class="flow-step-content">
-                              <h4 class="text-gray-800 font-semibold">
-                                {{ name }}
-                              </h4>
-                              <p class="text-gray-600">
-                                {{ description }}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mb-8">
-                  <h3 class="mb-4 text-lg text-gray-800 font-semibold">
-                    生产工艺特点
-                  </h3>
-                  <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div v-for="{ name, description } of product.processCharacteristics" :key="name" class="rounded-lg bg-gray-50 p-4">
-                      <h4 class="mb-2 text-gray-800 font-medium">
-                        {{ name }}
-                      </h4>
-                      <p class="text-gray-600">
-                        {{ description }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 class="mb-4 text-lg text-gray-800 font-semibold">
-                    质量控制
-                  </h3>
-                  <div class="space-y-4">
-                    <div class="flex items-start gap-3">
-                      <div class="h-10 w-10 flex items-center justify-center rounded-full bg-green-100">
-                        <i class="pi pi-shield text-green-600" />
-                      </div>
-                      <div>
-                        <h4 class="mb-1 text-gray-800 font-medium">
-                          原料质量控制
-                        </h4>
-                        <p class="text-gray-600">
-                          每批原料入厂前进行农药残留、重金属、霉菌毒素等多项检测，确保原料安全。
-                        </p>
-                      </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <div class="h-10 w-10 flex items-center justify-center rounded-full bg-green-100">
-                        <i class="pi pi-cog text-green-600" />
-                      </div>
-                      <div>
-                        <h4 class="mb-1 text-gray-800 font-medium">
-                          生产过程控制
-                        </h4>
-                        <p class="text-gray-600">
-                          生产全过程实施HACCP管理体系，关键控制点实时监控，确保生产过程安全可控。
-                        </p>
-                      </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <div class="h-10 w-10 flex items-center justify-center rounded-full bg-green-100">
-                        <i class="pi pi-check-square text-green-600" />
-                      </div>
-                      <div>
-                        <h4 class="mb-1 text-gray-800 font-medium">
-                          成品检验
-                        </h4>
-                        <p class="text-gray-600">
-                          每批产品出厂前进行感官、理化、微生物等全面检测，确保产品符合国家食品安全标准。
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TabPanel>
-
-            <TabPanel header="规格参数">
-              <div class="rounded-lg bg-white p-6 shadow-sm">
-                <h2 class="mb-4 text-xl text-gray-800 font-bold">
-                  规格参数
-                </h2>
-
-                <div class="overflow-x-auto">
-                  <table class="min-w-full border-collapse">
-                    <tbody>
-                      <tr class="border-b">
-                        <td class="w-1/4 bg-gray-50 px-4 py-3 text-gray-700 font-medium">
-                          品牌
-                        </td>
-                        <td class="px-4 py-3 text-gray-700">
-                          {{ product.brand }}
-                        </td>
-                      </tr>
-                      <tr class="border-b">
-                        <td class="bg-gray-50 px-4 py-3 text-gray-700 font-medium">
-                          产品名称
-                        </td>
-                        <td class="px-4 py-3 text-gray-700">
-                          {{ product.name }}
-                        </td>
-                      </tr>
-                      <tr class="border-b">
-                        <td class="bg-gray-50 px-4 py-3 text-gray-700 font-medium">
-                          产品分类
-                        </td>
-                        <td class="px-4 py-3 text-gray-700">
-                          {{ product.category }}
-                        </td>
-                      </tr>
-                      <tr class="border-b">
-                        <td class="bg-gray-50 px-4 py-3 text-gray-700 font-medium">
-                          产品规格
-                        </td>
-                        <td class="px-4 py-3 text-gray-700">
-                          {{ product.weight }}{{ product.weightUnit }}/{{ product.unit }}
-                        </td>
-                      </tr>
-                      <tr class="border-b">
-                        <td class="bg-gray-50 px-4 py-3 text-gray-700 font-medium">
-                          包装方式
-                        </td>
-                        <td class="px-4 py-3 text-gray-700">
-                          {{ product.packagingType }}
-                        </td>
-                      </tr>
-                      <tr class="border-b">
-                        <td class="bg-gray-50 px-4 py-3 text-gray-700 font-medium">
-                          产地
-                        </td>
-                        <td class="px-4 py-3 text-gray-700">
-                          {{ product.origin }}
-                        </td>
-                      </tr>
-                      <tr class="border-b">
-                        <td class="bg-gray-50 px-4 py-3 text-gray-700 font-medium">
-                          保质期
-                        </td>
-                        <td class="px-4 py-3 text-gray-700">
-                          {{ product.shelfLife }}
-                        </td>
-                      </tr>
-                      <tr class="border-b">
-                        <td class="bg-gray-50 px-4 py-3 text-gray-700 font-medium">
-                          存储方法
-                        </td>
-                        <td class="px-4 py-3 text-gray-700">
-                          {{ product.storageMethod }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="bg-gray-50 px-4 py-3 text-gray-700 font-medium">
-                          商品编码
-                        </td>
-                        <td class="px-4 py-3 text-gray-700">
-                          {{ product.sku }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </TabPanel>
-
-            <TabPanel header="营养信息">
-              <div class="rounded-lg bg-white p-6 shadow-sm">
-                <h2 class="mb-4 text-xl text-gray-800 font-bold">
-                  营养信息
-                </h2>
-
-                <div class="mb-6">
-                  <p class="whitespace-pre-line text-gray-700">
-                    {{ product.nutritionalInfo.description }}
-                  </p>
-                </div>
-
-                <!-- 营养成分表 -->
-                <div class="overflow-hidden border rounded-lg">
-                  <div class="border-b bg-gray-100 p-4">
-                    <h3 class="text-lg text-gray-800 font-semibold">
-                      营养成分表
-                    </h3>
-                    <p class="text-sm text-gray-600">
-                      {{ product.nutritionalInfo.gContent }}
-                    </p>
-                  </div>
-                  <div class="p-4">
-                    <div class="grid grid-cols-2 gap-4">
-                      <div v-for="{ name, weight, unit } of product.nutritionalInfo.ingredients" :key="name" class="border-b pb-2">
-                        <span class="text-gray-600">{{ name }}</span>
-                        <span class="float-right text-gray-800 font-medium">{{ weight }} {{ unit }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 营养价值 -->
-                <div class="mt-8">
-                  <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                    营养价值
-                  </h3>
-                  <div class="space-y-4">
-                    <div class="flex items-start gap-3">
-                      <div class="h-10 w-10 flex items-center justify-center rounded-full bg-green-100">
-                        <i class="pi pi-heart-fill text-green-600" />
-                      </div>
-                      <div>
-                        <h4 class="mb-1 text-gray-800 font-medium">
-                          均衡的营养成分
-                        </h4>
-                        <p class="text-gray-600">
-                          提供蛋白质、脂肪和碳水化合物等多种营养素，助力维持身体健康与活力。
-                        </p>
-                      </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <div class="h-10 w-10 flex items-center justify-center rounded-full bg-green-100">
-                        <i class="pi pi-bolt text-green-600" />
-                      </div>
-                      <div>
-                        <h4 class="mb-1 text-gray-800 font-medium">
-                          丰富的维生素与矿物质
-                        </h4>
-                        <p class="text-gray-600">
-                          含有钙、铁、维生素A、C等多种微量元素，支持骨骼健康、免疫力提升及整体代谢。
-                        </p>
-                      </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <div class="h-10 w-10 flex items-center justify-center rounded-full bg-green-100">
-                        <i class="pi pi-shield text-green-600" />
-                      </div>
-                      <div>
-                        <h4 class="mb-1 text-gray-800 font-medium">
-                          天然健康益处
-                        </h4>
-                        <p class="text-gray-600">
-                          富含膳食纤维、抗氧化物质等成分，有助于促进消化、延缓衰老及增强身体防护力。
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TabPanel>
-
-            <TabPanel header="认证信息">
-              <div class="rounded-lg bg-white p-6 shadow-sm">
-                <h2 class="mb-4 text-xl text-gray-800 font-bold">
-                  认证信息
-                </h2>
-
-                <div class="mb-6">
-                  <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                    产品认证
-                  </h3>
-                  <div class="grid grid-cols-2 gap-4 lg:grid-cols-4 md:grid-cols-3">
-                    <div
-                      v-for="(cert, index) in product.certifications"
-                      :key="index"
-                      class="flex flex-col items-center border rounded-lg p-4"
-                    >
-                      <span class="text-sm text-gray-700 font-medium">{{ cert }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mb-6">
-                  <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                    生产许可
-                  </h3>
-                  <div class="border rounded-lg p-4">
-                    <div class="flex items-center gap-4">
-                      <i class="pi pi-file-pdf text-2xl text-red-500" />
-                      <div>
-                        <p class="text-gray-800 font-medium">
-                          食品生产许可证
-                        </p>
-                        <p class="text-sm text-gray-600">
-                          {{ product.productionLicense || '暂无信息' }}
-                        </p>
-                      </div>
-                      <Button
-                        v-if="product.productionLicense"
-                        icon="pi pi-eye"
-                        class="p-button-outlined p-button-rounded ml-auto"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 class="mb-3 text-lg text-gray-800 font-semibold">
-                    检测报告
-                  </h3>
-                  <div class="border rounded-lg p-4">
-                    <div class="flex items-center gap-4">
-                      <i class="pi pi-file-pdf text-2xl text-red-500" />
-                      <div>
-                        <p class="text-gray-800 font-medium">
-                          产品检测报告
-                        </p>
-                        <p class="text-sm text-gray-600">
-                          {{ product.testReport || '暂无信息' }}
-                        </p>
-                      </div>
-                      <Button
-                        v-if="product.testReport"
-                        icon="pi pi-eye"
-                        class="p-button-outlined p-button-rounded ml-auto"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TabPanel>
-
-            <TabPanel header="产品反馈">
-              <div class="rounded-lg bg-white p-6 shadow-sm">
-                <h2 class="mb-6 text-xl text-gray-800 font-bold">
-                  产品反馈
-                </h2>
-
-                <div class="w-full">
-                  <p class="mb-6 text-gray-600">
-                    感谢您对我们产品的关注！如果您有任何建议或问题，请填写以下表单，我们将尽快回复您。
-                  </p>
-
-                  <form class="space-y-6" @submit.prevent="submitFeedback">
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                      <div class="form-group">
-                        <label for="name" class="mb-1 block text-sm text-gray-700 font-medium">姓名</label>
-                        <InputText
-                          id="name"
-                          v-model="feedbackForm.name"
-                          class="w-full"
-                          :class="{ 'p-invalid': v$.name.$invalid && v$.name.$dirty }"
-                          aria-describedby="name-error"
-                        />
-                        <small v-if="v$.name.$invalid && v$.name.$dirty" id="name-error" class="p-error mt-1 block">
-                          请输入您的姓名
-                        </small>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="contact" class="mb-1 block text-sm text-gray-700 font-medium">联系方式（电话/邮箱）</label>
-                        <InputText
-                          id="contact"
-                          v-model="feedbackForm.contact"
-                          class="w-full"
-                          :class="{ 'p-invalid': v$.contact.$invalid && v$.contact.$dirty }"
-                          aria-describedby="contact-error"
-                        />
-                        <small v-if="v$.contact.$invalid && v$.contact.$dirty" id="contact-error" class="p-error mt-1 block">
-                          请输入有效的联系方式
-                        </small>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="feedbackType" class="mb-1 block text-sm text-gray-700 font-medium">反馈类型</label>
-                      <Dropdown
-                        id="feedbackType"
-                        v-model="feedbackForm.type"
-                        :options="feedbackTypes"
-                        option-label="name"
-                        placeholder="请选择反馈类型"
-                        class="w-full"
-                        :class="{ 'p-invalid': v$.type.$invalid && v$.type.$dirty }"
-                        aria-describedby="type-error"
-                      />
-                      <small v-if="v$.type.$invalid && v$.type.$dirty" id="type-error" class="p-error mt-1 block">
-                        请选择反馈类型
-                      </small>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="message" class="mb-1 block text-sm text-gray-700 font-medium">反馈内容</label>
-                      <Textarea
-                        id="message"
-                        v-model="feedbackForm.message"
-                        rows="5"
-                        class="w-full"
-                        :class="{ 'p-invalid': v$.message.$invalid && v$.message.$dirty }"
-                        aria-describedby="message-error"
-                      />
-                      <small v-if="v$.message.$invalid && v$.message.$dirty" id="message-error" class="p-error mt-1 block">
-                        请输入反馈内容（至少10个字符）
-                      </small>
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                      <Checkbox
-                        id="privacy"
-                        v-model="feedbackForm.privacy"
-                        :binary="true"
-                        :class="{ 'p-invalid': v$.privacy.$invalid && v$.privacy.$dirty }"
-                      />
-                      <label for="privacy" class="text-sm text-gray-600">我同意贵公司收集和处理我的个人信息用于回复我的反馈</label>
-                    </div>
-                    <small v-if="v$.privacy.$invalid && v$.privacy.$dirty" class="p-error mt-1 block">
-                      请同意我们的隐私政策
-                    </small>
-
-                    <div class="flex justify-center pt-4">
-                      <Button
-                        type="submit"
-                        label="提交反馈"
-                        icon="pi pi-send"
-                        class="p-button-success"
-                        :loading="submitting"
-                      />
-                    </div>
-                  </form>
-
-                  <Dialog
-                    v-model:visible="showSuccessDialog"
-                    header="提交成功"
-                    :modal="true"
-                    :closable="true"
-                    :style="{ width: '90%', maxWidth: '400px' }"
-                  >
-                    <div class="flex-column align-items-center flex">
-                      <i class="pi pi-check-circle mb-4 text-5xl text-green-500" />
-                      <p class="text-center">
-                        感谢您的反馈！我们已收到您的信息，将尽快处理并回复。
-                      </p>
-                    </div>
-                    <template #footer>
-                      <Button label="确定" icon="pi pi-check" autofocus @click="showSuccessDialog = false" />
-                    </template>
-                  </Dialog>
-                </div>
-              </div>
-            </TabPanel>
-          </TabView>
+      <!-- 咨询与合作 -->
+      <section class="from-blue-900 to-blue-800 bg-gradient-to-r px-4 py-12 text-white">
+        <div class="mx-auto max-w-7xl text-center">
+          <h2 class="mb-6 text-3xl font-bold">
+            需要更多产品信息？
+          </h2>
+          <p class="mx-auto mb-8 max-w-2xl text-lg opacity-90">
+            如果您对该产品有任何疑问或需要定制化服务，请随时与我们联系
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <Button
+              label="立即咨询" icon="pi pi-comments"
+              class="border-white bg-white text-blue-900 hover:bg-gray-100"
+            />
+            <Button
+              label="获取报价" icon="pi pi-file-o" outlined
+              class="border-white text-white hover:bg-white/10"
+            />
+          </div>
         </div>
       </section>
     </div>
@@ -796,50 +569,35 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* 生产流程样式 */
-.production-flow {
-  padding: 20px 0;
+/* 自定义样式 */
+:deep(.p-tabview .p-tabview-nav) {
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.flow-timeline {
-  position: relative;
+:deep(.p-tabview .p-tabview-nav li .p-tabview-nav-link) {
+  border: none;
+  color: #64748b;
+  padding: 1rem 1.5rem;
 }
 
-.flow-line {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  bottom: 24px;
-  width: 2px;
-  background-color: #10b981;
+:deep(.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link) {
+  border-bottom: 2px solid #0ea5e9;
+  color: #0ea5e9;
 }
 
-.flow-steps {
-  position: relative;
+:deep(.p-tabview .p-tabview-nav li:not(.p-highlight):not(.p-disabled):hover .p-tabview-nav-link) {
+  border-bottom: 2px solid #e0f2fe;
+  color: #0ea5e9;
 }
 
-.flow-step {
-  display: flex;
-  margin-bottom: 30px;
+:deep(.p-tabview-panels) {
+  padding: 0;
 }
 
-.flow-step:last-child {
-  margin-bottom: 0;
-}
-
-.flow-step-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin-right: 16px;
-  z-index: 1;
-}
-
-.flow-step-content {
-  padding-top: 4px;
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 </style>

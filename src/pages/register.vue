@@ -57,7 +57,7 @@ function handleSubmit() {
           </FloatLabel>
 
           <FloatLabel>
-            <Password v-model="form.password" toggle-mask fluid input-id="password" />
+            <Password v-model="form.password" fluid toggle-mask input-id="password" />
             <label for="password">密码</label>
           </FloatLabel>
 

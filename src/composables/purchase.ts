@@ -33,6 +33,13 @@ export const suppliers: Supplier[] = [
     phone: '987-654-3210',
     address: 'Address 2',
   },
+  {
+    id: 3,
+    name: '无锡华顺民生食品有限公司',
+    contact: 'Contact 3',
+    phone: '123-456-7893',
+    address: 'Address 3',
+  },
 ]
 
 export const suppliersMap = suppliers.reduce<Record<Supplier['id'], Supplier>>((acc, supplier) => {

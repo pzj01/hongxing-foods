@@ -1,21 +1,21 @@
 import { definePreset } from '@primevue/themes'
-import Aura from '@primevue/themes/aura'
+import Material from '@primevue/themes/material'
 
-export default definePreset(Aura, {
+export default definePreset(Material, {
   semantic: {
     transitionDuration: '300ms',
     primary: {
-      50: '{green.50}',
-      100: '{green.100}',
-      200: '{green.200}',
-      300: '{green.300}',
-      400: '{green.400}',
-      500: '{green.500}',
-      600: '{green.600}',
-      700: '{green.700}',
-      800: '{green.800}',
-      900: '{green.900}',
-      950: '{green.950}',
+      50: '{sky.50}',
+      100: '{sky.100}',
+      200: '{sky.200}',
+      300: '{sky.300}',
+      400: '{sky.400}',
+      500: '{sky.500}',
+      600: '{sky.600}',
+      700: '{sky.700}',
+      800: '{sky.800}',
+      900: '{sky.900}',
+      950: '{sky.950}',
     },
     colorScheme: {
       light: {
@@ -32,6 +32,9 @@ export default definePreset(Aura, {
     },
   },
   components: {
+    menubar: {
+      gap: '3rem',
+    },
     button: {
       colorScheme: {
         light: {

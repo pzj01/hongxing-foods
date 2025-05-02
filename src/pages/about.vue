@@ -1,640 +1,584 @@
-<script setup>
-const router = useRouter()
+<script setup lang="ts">
+import Button from 'primevue/button'
+import { ref } from 'vue'
 
-// 导航方法
-function navigateToContact() {
-  router.push('/contact')
+// 发展历程数据
+interface Milestone {
+  year: string
+  title: string
+  description: string
+  image: string
 }
 
-function navigateToProducts() {
-  router.push('/products')
-}
-
-// 公司图片
-const companyImage = ref('/company-building.png')
-
-// 企业文化数据
-const companyCulture = ref([
+const milestones = ref<Milestone[]>([
   {
-    title: '诚信经营',
-    description: '诚实守信是我们的立业之本，我们始终坚持诚信经营，与客户、供应商和员工建立长期互信关系。',
-    icon: 'pi pi-check-circle',
+    year: '2015年',
+    title: '公司成立',
+    description: '江西宏润配送有限公司在萍乡市正式成立，开始为本地学校食堂提供食材配送服务。',
+    image: '/placeholder.svg?height=200&width=300',
   },
   {
-    title: '品质至上',
-    description: '我们对产品质量精益求精，严格把控每一个环节，确保为消费者提供安全、健康、美味的食品。',
-    icon: 'pi pi-star',
+    year: '2017年',
+    title: '业务扩展',
+    description: '公司业务范围扩展至江西全省，客户数量突破50家，建立了第一个现代化冷链仓储中心。',
+    image: '/placeholder.svg?height=200&width=300',
   },
   {
-    title: '创新发展',
-    description: '我们不断创新，紧跟市场趋势，开发新产品，优化服务流程，为客户创造更多价值。',
-    icon: 'pi pi-bolt',
+    year: '2019年',
+    title: '获得资质认证',
+    description: '获得ISO9001质量管理体系认证和HACCP食品安全管理体系认证，标志着公司管理水平和食品安全保障能力的提升。',
+    image: '/placeholder.svg?height=200&width=300',
+  },
+  {
+    year: '2021年',
+    title: '技术升级',
+    description: '引入智能物流管理系统和冷链监控系统，提升配送效率和食品安全保障水平。',
+    image: '/placeholder.svg?height=200&width=300',
+  },
+  {
+    year: '2023年',
+    title: '战略发展',
+    description: '制定五年发展战略规划，计划在江西省内建立多个配送中心，进一步提升服务能力和覆盖范围。',
+    image: '/placeholder.svg?height=200&width=300',
   },
 ])
 
-// 发展历程数据
-const milestones = ref([
+// 核心价值观数据
+interface CoreValue {
+  icon: string
+  title: string
+  description: string
+}
+
+const coreValues = ref<CoreValue[]>([
   {
-    year: '2021',
-    title: '公司成立',
-    description: '萍乡洪星商贸有限公司正式成立，开始从事食品批发业务。',
-    image: '/milestone-2010.svg',
+    icon: 'pi pi-shield',
+    title: '品质第一',
+    description: '坚持高标准的食品质量要求，从源头把控食材品质，确保每一份食材的安全与健康。',
   },
   {
-    year: '2023',
-    title: '业务扩展',
-    description: '业务范围扩展至江西全省，建立了第一个现代化仓储中心。',
-    image: '/milestone-2013.svg',
+    icon: 'pi pi-users',
+    title: '客户至上',
+    description: '以客户需求为中心，提供个性化的服务方案，不断提升客户满意度和忠诚度。',
   },
   {
-    year: '2024',
-    title: '电商平台上线',
-    description: '公司电子商务平台正式上线，开始线上销售业务。',
-    image: '/milestone-2016.svg',
+    icon: 'pi pi-sync',
+    title: '持续创新',
+    description: '不断引入新技术、新理念，优化服务流程，提升运营效率和服务质量。',
   },
   {
-    year: '2025',
-    title: '品牌升级',
-    description: '完成品牌升级，推出自有品牌产品系列，获得市场广泛认可。',
-    image: '/milestone-2019.svg',
+    icon: 'pi pi-globe',
+    title: '社会责任',
+    description: '积极履行企业社会责任，关注食品安全和环境保护，为社会可持续发展贡献力量。',
   },
 ])
 
 // 团队成员数据
-const teamMembers = ref([
+interface TeamMember {
+  name: string
+  position: string
+  description: string
+  image: string
+}
+
+const teamMembers = ref<TeamMember[]>([
   {
-    name: '张美霞',
-    position: '创始人兼总经理',
-    description: '拥有20年食品行业经验，负责公司整体战略规划和业务发展。',
-    photo: '/team-ceo.svg',
-    social: [
-      { icon: 'pi pi-facebook', link: '#' },
-      { icon: 'pi pi-twitter', link: '#' },
-      { icon: 'pi pi-linkedin', link: '#' },
-    ],
+    name: '李佳慧',
+    position: '总经理',
+    description: '拥有15年食品行业经验，负责公司整体战略规划和业务发展，带领团队不断创新和进步。',
+    image: '/placeholder.svg?height=300&width=300',
   },
   {
     name: '李明',
     position: '运营总监',
-    description: '负责公司日常运营管理，确保各部门高效协作。',
-    photo: '/team-coo.svg',
-    social: [
-      { icon: 'pi pi-facebook', link: '#' },
-      { icon: 'pi pi-linkedin', link: '#' },
-    ],
+    description: '负责公司日常运营管理，拥有丰富的供应链管理经验，致力于提升运营效率和服务质量。',
+    image: '/placeholder.svg?height=300&width=300',
   },
   {
     name: '王丽',
-    position: '市场总监',
-    description: '负责品牌推广和市场营销策略，拥有丰富的市场营销经验。',
-    photo: '/team-marketing.svg',
-    social: [
-      { icon: 'pi pi-twitter', link: '#' },
-      { icon: 'pi pi-instagram', link: '#' },
-    ],
-  },
-  {
-    name: '陈伟',
-    position: '采购经理',
-    description: '负责产品采购和供应链管理，确保产品质量和供应稳定。',
-    photo: '/team-procurement.svg',
-    social: [
-      { icon: 'pi pi-linkedin', link: '#' },
-    ],
+    position: '质量控制经理',
+    description: '食品安全专家，负责建立和维护公司的食品安全管理体系，确保食品质量符合国家标准。',
+    image: '/placeholder.svg?height=300&width=300',
   },
 ])
 
-// 企业荣誉数据
-const awards = ref([
+// 公司优势数据
+interface Advantage {
+  icon: string
+  title: string
+  description: string
+  points: string[]
+}
+
+const advantages = ref<Advantage[]>([
   {
-    title: '江西省优秀民营企业',
-    description: '因在促进地方经济发展和创造就业机会方面的突出贡献而获得此荣誉。',
-    year: '2022年',
-    icon: 'pi pi-trophy',
-  },
-  {
-    title: '食品安全示范单位',
-    description: '在食品安全管理方面表现突出，被评为市级食品安全示范单位。',
-    year: '2021年',
     icon: 'pi pi-shield',
+    title: '质量保障体系',
+    description: '建立了完善的食品安全管理体系，从源头把控食材质量，确保每一份食材的安全与健康。',
+    points: [
+      'ISO9001质量管理体系认证',
+      'HACCP食品安全管理体系认证',
+      '严格的供应商筛选和管理',
+      '全程质量追溯系统',
+    ],
   },
   {
-    title: '消费者信赖品牌',
-    description: '通过消费者投票评选，获得"消费者最信赖品牌"称号。',
-    year: '2023年',
-    icon: 'pi pi-heart',
+    icon: 'pi pi-truck',
+    title: '专业物流配送',
+    description: '拥有现代化的冷链物流配送系统，确保食材新鲜送达，满足客户的多样化需求。',
+    points: [
+      '50+专业配送车辆',
+      '全程温控冷链配送',
+      '智能物流管理系统',
+      '准时高效的配送服务',
+    ],
   },
   {
-    title: '电子商务示范企业',
-    description: '在电子商务应用和创新方面表现突出，被评为示范企业。',
-    year: '2024年',
-    icon: 'pi pi-desktop',
-  },
-  {
-    title: '年度纳税先进单位',
-    description: '因依法诚信纳税，被评为年度纳税先进单位。',
-    year: '2021年',
-    icon: 'pi pi-chart-bar',
-  },
-  {
-    title: '质量管理先进企业',
-    description: '在质量管理体系建设和实施方面表现突出，获得此荣誉。',
-    year: '2022年',
-    icon: 'pi pi-check-square',
+    icon: 'pi pi-users',
+    title: '专业服务团队',
+    description: '拥有一支经验丰富、专业高效的团队，为客户提供一站式的食材供应解决方案。',
+    points: [
+      '专业的采购团队',
+      '经验丰富的配送人员',
+      '一对一客户服务',
+      '7*24小时响应机制',
+    ],
   },
 ])
 
-// 证书类型
-const certificateTypes = ref([
-  { label: '全部', value: 'all' },
-  { label: '食品安全', value: 'safety' },
-  { label: '质量管理', value: 'quality' },
-  { label: '环境管理', value: 'environment' },
-  { label: '其他', value: 'other' },
-])
+// 资质证书数据
+interface Certificate {
+  name: string
+  image: string
+  issueDate: string
+}
 
-// 当前选中的证书类型
-const selectedType = ref('all')
-
-// 证书数据
-const certificates = ref([
+const certificates = ref<Certificate[]>([
+  {
+    name: 'ISO9001质量管理体系认证证书',
+    image: '/certificates/质量管理.png',
+    issueDate: '2019年颁发',
+  },
   {
     name: '食品安全管理体系认证证书',
-    type: 'safety',
-    image: '/certificates/food-safety-management-certificate.png',
-    issuedBy: '华中国际认证检验集团有限公司',
-    issuedDate: '2025-01-26',
-    validUntil: '2028-01-25',
-    description: '本证书证明持证组织已建立并实施符合 ISO 22000:2018 标准的食品安全管理体系，涵盖食品生产、加工及供应链管理的全过程。通过系统化的危害分析与关键控制点（HACCP）方法，组织能够有效识别、评估和控制食品安全风险，确保食品符合安全和质量要求。本认证由华中国际认证检验集团有限公司颁发，验证了组织在食品安全管理方面的卓越能力，适用于国内外食品相关行业，提升市场竞争力和消费者信任。',
+    image: '/certificates/食品安全.png',
+    issueDate: '2019年颁发',
   },
   {
-    name: '环境管理体系认证证书',
-    type: 'environment',
-    image: '/certificates/environmental-management-certificate.png',
-    issuedBy: '北京通贯验证有限公司',
-    issuedDate: '2025-01-03',
-    validUntil: '2028-01-02',
-    description: '本证书证明持证组织已建立并实施符合 ISO 14001:2015 标准的环境管理体系，覆盖组织运营中的环境影响管理全过程。通过系统化的环境目标设定、风险评估和持续改进，组织能够有效降低环境负荷，遵守相关法律法规，并提升环境绩效。本认证由华中国际认证检验集团有限公司颁发，验证了组织在环境管理与可持续发展方面的卓越能力，适用于各类行业，增强市场竞争力和社会责任形象。',
+    name: '食品经营许可证',
+    image: '/certificates/食品许可.png',
+    issueDate: '2023年颁发',
   },
   {
-    name: '质量管理体系认证证书',
-    type: 'quality',
-    image: '/certificates/quality-management-certificate.png',
-    issuedBy: '北京通贯验证有限公司',
-    issuedDate: '2025-01-03',
-    validUntil: '2028-01-02',
-    description: '本证书证明持证组织已建立并实施符合 ISO 9001:2015 标准的质量管理体系，覆盖产品和服务交付的全过程。通过系统化的流程管理、客户满意度提升和持续改进，组织能够确保产品质量稳定，满足客户期望并符合相关法规要求。本认证由华中国际认证检验集团有限公司颁发，验证了组织在质量管理方面的卓越能力，适用于各类行业，提升市场竞争力和品牌信誉。',
+    name: '环境管理体系证书',
+    image: '/certificates/环境管理.png',
+    issueDate: '2025年颁发',
   },
   {
-    name: '职业健康安全管理体系认证证书',
-    type: 'safety',
-    image: '/certificates/occupational-health-safety-certificate.png',
-    issuedBy: '北京通贯验证有限公司',
-    issuedDate: '2025-01-03',
-    validUntil: '2028-01-02',
-    description: '本证书证明持证组织已建立并实施符合 ISO 45001:2018 标准的职业健康安全管理体系，覆盖工作场所的健康与安全管理全过程。通过系统化的风险评估、危害控制和持续改进，组织能够有效预防职业伤害和疾病，保障员工及相关方的健康与安全，并符合相关法律法规要求。本认证由华中国际认证检验集团有限公司颁发，验证了组织在职业健康安全管理方面的卓越能力，适用于各类行业，提升员工福祉和企业社会责任形象。',
-  },
-  {
-    name: '营业执照',
-    type: 'other',
-    image: '/certificates/business-license.png',
-    issuedBy: '国家市场监督管理总局',
-    issuedDate: '2021-08-27',
-    validUntil: '长期有效',
-    description: '本营业执照证明持证组织已依法在国家市场监督管理部门注册登记，具备合法经营资格。证书涵盖企业的基本信息，包括法定名称、注册资本、经营范围和住所等，确认其在法律法规框架内开展商业活动的权利。本执照由国家市场监督管理总局或其授权机构颁发，是企业合法运营的核心凭证，适用于各类商业活动，保障市场交易的合规性和透明度。',
+    name: '职业安全健康管理体系证书',
+    image: '/certificates/职业安全.png',
+    issueDate: '2025年颁发',
   },
 ])
 
-// 对话框控制
-const dialogVisible = ref(false)
-const selectedCertificate = ref(null)
-
-// 筛选后的证书
-const filteredCertificates = computed(() => {
-  if (selectedType.value === 'all') {
-    return certificates.value
-  }
-  else {
-    return certificates.value.filter(cert => cert.type === selectedType.value)
-  }
-})
-
-// 筛选证书
-function filterCertificates(type) {
-  selectedType.value = type
+// 招标信息数据
+interface BiddingInfo {
+  title: string
+  description: string
+  publishDate: string
+  endDate: string
+  status: string
 }
 
-// 打开证书详情
-function openCertificate(certificate) {
-  selectedCertificate.value = certificate
-  dialogVisible.value = true
-}
-
-// 获取证书类型名称
-function getCertificateTypeName(type) {
-  const found = certificateTypes.value.find(t => t.value === type)
-  return found ? found.label : type
-}
-
-// 获取徽章样式
-function getBadgeSeverity(type) {
-  switch (type) {
-    case 'safety':
-      return 'success'
-    case 'quality':
-      return 'info'
-    case 'environment':
-      return 'secondary'
-    default:
-      return 'info'
-  }
-}
+const biddingInfo = ref<BiddingInfo[]>([
+  {
+    title: '湘东中学食堂配送项目',
+    description: '为湘东中学食堂提供鸡肉、猪肉、牛肉等肉类食材的配送服务，确保食材新鲜、品质优良，供应商需具备相关资质和稳定供应能力。',
+    publishDate: '2023-09',
+    endDate: '2024-08',
+    status: '已完成',
+  },
+  {
+    title: '萍乡市麻山中学食堂食材供应商招标项目',
+    description: '为萍乡市麻山中学食堂供应鱼、虾、贝类等海鲜食材，需配备专业冷链物流体系，并严格遵守食品安全标准。',
+    publishDate: '2024-09',
+    endDate: '2026-08',
+    status: '进行中',
+  },
+  {
+    title: '江西工业工程职业技术学院麻辣烫冻品食材采购合同',
+    description: '为江西工业工程职业技术学院提供麻辣烫专用冷冻鱼、虾、贝类等食材，需保证冷链运输的高效性和食材的长期品质稳定。',
+    publishDate: '2024-01',
+    endDate: '长期',
+    status: '进行中',
+  },
+  {
+    title: '湘东中学食堂食材供应采购项目（冻品）',
+    description: '为湘东中学食堂采购冷冻鱼、虾、贝类等海鲜食材，供应商需具备可靠的冷链配送能力，确保食材安全与品质符合食堂需求。',
+    publishDate: '2024-08-29',
+    endDate: '长期',
+    status: '进行中',
+  },
+])
 </script>
 
 <template>
   <MainLayout>
-    <div class="about-content">
-      <!-- 页面标题 -->
-      <section class="from-green-50 to-green-100 bg-gradient-to-r py-12">
-        <div class="mx-auto px-4 text-center container">
-          <h1 class="mb-4 text-4xl text-green-800 font-bold">
+    <!-- 页面标题 -->
+    <section class="relative overflow-hidden from-blue-900 to-blue-800 bg-gradient-to-r py-12 text-white md:py-20">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0 bg-repeat" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E');" />
+      </div>
+      <div class="relative z-10 mx-auto max-w-7xl px-4">
+        <div class="text-center">
+          <h1 class="mb-4 text-4xl font-bold md:text-5xl">
             关于我们
           </h1>
-          <p class="mx-auto max-w-2xl text-gray-700">
-            了解萍乡洪星商贸有限公司的发展历程、企业文化和团队风采
+          <p class="mx-auto max-w-3xl text-lg opacity-90 md:text-xl">
+            了解江西宏润配送有限公司的发展历程、企业文化和服务优势
           </p>
         </div>
-      </section>
+      </div>
+      <!-- 波浪分隔符 -->
+      <div class="absolute bottom-0 left-0 right-0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" class="h-auto w-full">
+          <path fill="#F9FAFB" fill-opacity="1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" />
+        </svg>
+      </div>
+    </section>
 
-      <!-- 公司简介 -->
-      <section class="bg-white py-16">
-        <div class="mx-auto px-4 container">
-          <div class="flex flex-col items-center gap-12 md:flex-row">
-            <div class="md:w-1/2">
-              <img
-                :src="companyImage"
-                alt="萍乡洪星商贸有限公司"
-                class="h-96 w-full rounded-lg object-cover shadow-lg"
-              >
+    <!-- 公司简介 -->
+    <section class="px-4 py-16">
+      <div class="mx-auto max-w-7xl">
+        <div class="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
+          <div>
+            <div class="mb-4 inline-flex items-center justify-center rounded-full bg-sky-100 px-4 py-1 text-sm text-sky-700 font-medium">
+              <i class="pi pi-building mr-2" />公司简介
             </div>
-            <div class="md:w-1/2">
-              <h2 class="mb-6 text-3xl text-gray-800 font-bold">
-                公司简介
-              </h2>
-              <div class="text-gray-700 space-y-4">
-                <p>
-                  萍乡洪星商贸有限公司成立于2021年，是一家专注于食品销售的企业。多年来，我们始终坚持"质量第一，客户至上"的经营理念，致力于为消费者提供安全、健康、美味的食品。
-                </p>
-                <p>
-                  公司总部位于江西省萍乡市，拥有现代化的仓储物流中心和完善的销售网络，业务覆盖江西全省及周边地区。我们与国内多家知名食品生产企业建立了长期稳定的合作关系，确保产品质量和供应稳定。
-                </p>
-                <p>
-                  我们的产品种类丰富，包括休闲食品、坚果炒货、饮品冲调、地方特产等多个品类，满足不同消费者的需求。无论是日常食用还是节日送礼，都能在洪星商贸找到合适的选择。
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 企业文化 -->
-      <section class="bg-gray-50 py-16">
-        <div class="mx-auto px-4 container">
-          <div class="mb-12 text-center">
-            <h2 class="mb-4 text-3xl text-gray-800 font-bold">
-              企业文化
+            <h2 class="mb-6 text-3xl text-blue-900 font-bold">
+              专业的食品供应链服务商
             </h2>
-            <p class="mx-auto max-w-2xl text-gray-600">
-              我们的价值观和使命引领着公司的每一步发展
-            </p>
-          </div>
-
-          <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div
-              v-for="(culture, index) in companyCulture"
-              :key="index"
-              class="rounded-lg bg-white p-8 text-center shadow-sm transition-shadow duration-300 hover:shadow-md"
-            >
-              <div class="mx-auto mb-4 h-16 w-16 flex items-center justify-center rounded-full bg-green-100">
-                <i :class="culture.icon" style="font-size: 1.5rem;" class="text-2xl text-green-600" />
-              </div>
-              <h3 class="mb-3 text-xl text-gray-800 font-semibold">
-                {{ culture.title }}
-              </h3>
-              <p class="text-gray-600">
-                {{ culture.description }}
+            <div class="mb-6 h-1 w-16 bg-sky-500" />
+            <div class="text-gray-700 space-y-4">
+              <p>
+                江西宏润配送有限公司成立于2015年，是一家专业从事食品供应链和配送服务的企业，致力于为学校食堂等机构客户提供高品质的家禽、海鲜鱼类、火腿、鸡排等食品。
+              </p>
+              <p>
+                公司总部位于江西省南昌市，拥有现代化的仓储物流中心和冷链配送系统，服务范围覆盖江西全省及周边地区。我们拥有一支专业的采购团队和配送队伍，确保每一份食材的新鲜与安全。
+              </p>
+              <p>
+                多年来，我们始终坚持"品质第一、客户至上"的经营理念，通过严格的质量控制和高效的配送服务，赢得了众多客户的信任和好评，成为江西地区食品供应链服务的领先企业。
               </p>
             </div>
+            <div class="mt-8">
+              <Button label="了解更多" icon="pi pi-arrow-right" icon-pos="right" class="border-blue-900 bg-blue-900" />
+            </div>
           </div>
-        </div>
-      </section>
-
-      <!-- 发展历程 -->
-      <section class="bg-white py-16">
-        <div class="mx-auto px-4 container">
-          <div class="mb-12 text-center">
-            <h2 class="mb-4 text-3xl text-gray-800 font-bold">
-              发展历程
-            </h2>
-            <p class="mx-auto max-w-2xl text-gray-600">
-              见证萍乡洪星商贸有限公司的成长与发展
-            </p>
-          </div>
-
           <div class="relative">
-            <!-- 时间线 -->
-            <div class="absolute bottom-0 left-1/2 top-0 hidden w-0.5 transform bg-green-200 md:block -translate-x-1/2" />
-
-            <div class="space-y-12">
-              <div
-                v-for="(milestone, index) in milestones"
-                :key="index"
-                class="relative"
-              >
-                <div
-                  class="flex flex-col items-center md:flex-row" :class="[
-                    index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse',
-                  ]"
-                >
-                  <!-- 时间点 -->
-                  <div class="absolute left-1/2 top-0 z-10 hidden h-12 w-12 transform items-center justify-center rounded-full bg-green-500 text-white font-bold md:flex -translate-x-1/2">
-                    {{ milestone.year }}
-                  </div>
-
-                  <!-- 内容 -->
-                  <div
-                    class="md:w-5/12" :class="[
-                      index % 2 === 0 ? 'md:pr-16' : 'md:pl-16',
-                    ]"
-                  >
-                    <div class="rounded-lg bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md">
-                      <div class="mb-2 text-green-600 font-bold md:hidden">
-                        {{ milestone.year }}
-                      </div>
-                      <h3 class="mb-3 text-xl text-gray-800 font-semibold">
-                        {{ milestone.title }}
-                      </h3>
-                      <p class="text-gray-600">
-                        {{ milestone.description }}
-                      </p>
-                    </div>
-                  </div>
-
-                  <!-- 占位 -->
-                  <div class="md:w-2/12" />
-
-                  <!-- 图片 -->
-                  <div
-                    class="mt-4 md:mt-0 md:w-5/12" :class="[
-                      index % 2 === 0 ? 'md:pl-16' : 'md:pr-16',
-                    ]"
-                  >
-                    <!-- <img
-                      :src="milestone.image"
-                      :alt="milestone.title"
-                      class="h-auto w-full rounded-lg shadow-sm"
-                    > -->
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div class="absolute h-24 w-24 rounded-lg bg-sky-500 opacity-20 -left-6 -top-6" />
+            <div class="absolute h-24 w-24 rounded-lg bg-blue-900 opacity-20 -bottom-6 -right-6" />
+            <img src="/distribution.jpg" alt="江西宏润配送有限公司" class="relative z-10 h-auto w-full rounded-lg shadow-xl">
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- 团队介绍 -->
-      <section class="bg-gray-50 py-16">
-        <div class="mx-auto px-4 container">
-          <div class="mb-12 text-center">
-            <h2 class="mb-4 text-3xl text-gray-800 font-bold">
-              我们的团队
-            </h2>
-            <p class="mx-auto max-w-2xl text-gray-600">
-              专业的团队是我们最宝贵的财富
-            </p>
+    <!-- 发展历程 -->
+    <section class="bg-gray-100 px-4 py-16">
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-12 text-center">
+          <div class="mb-4 inline-flex items-center justify-center rounded-full bg-sky-100 px-4 py-1 text-sm text-sky-700 font-medium">
+            <i class="pi pi-history mr-2" />发展历程
           </div>
-
-          <div class="grid grid-cols-1 gap-8 lg:grid-cols-4 sm:grid-cols-2">
-            <div
-              v-for="(member, index) in teamMembers"
-              :key="index"
-              class="overflow-hidden rounded-lg bg-white shadow-sm transition-shadow duration-300 hover:shadow-md"
-            >
-              <!-- <img
-                :src="member.photo"
-                :alt="member.name"
-                class="h-64 w-full object-cover object-center"
-              > -->
-              <div class="p-6">
-                <h3 class="mb-1 text-xl text-gray-800 font-semibold">
-                  {{ member.name }}
-                </h3>
-                <p class="mb-3 text-green-600">
-                  {{ member.position }}
-                </p>
-                <p class="mb-4 text-gray-600">
-                  {{ member.description }}
-                </p>
-                <div class="flex space-x-3">
-                  <a
-                    v-for="(social, socialIndex) in member.social"
-                    :key="socialIndex"
-                    :href="social.link"
-                    class="text-gray-400 transition-colors duration-300 hover:text-green-600"
-                  >
-                    <i :class="social.icon" />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 企业荣誉 -->
-      <section class="bg-white py-16">
-        <div class="mx-auto px-4 container">
-          <div class="mb-12 text-center">
-            <h2 class="mb-4 text-3xl text-gray-800 font-bold">
-              企业荣誉
-            </h2>
-            <p class="mx-auto max-w-2xl text-gray-600">
-              多年来，我们获得了众多荣誉和认可
-            </p>
-          </div>
-
-          <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 md:grid-cols-2">
-            <div
-              v-for="(award, index) in awards"
-              :key="index"
-              class="rounded-lg bg-gray-50 p-6 shadow-sm transition-shadow duration-300 hover:shadow-md"
-            >
-              <div class="mb-4 flex items-center">
-                <div class="mr-4 h-12 w-12 flex items-center justify-center rounded-full bg-green-100">
-                  <i :class="award.icon" class="text-xl text-green-600" />
-                </div>
-                <h3 class="text-lg text-gray-800 font-semibold">
-                  {{ award.title }}
-                </h3>
-              </div>
-              <p class="mb-3 text-gray-600">
-                {{ award.description }}
-              </p>
-              <p class="text-sm text-gray-500">
-                {{ award.year }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="bg-gray-50 py-16">
-        <div class="mx-auto px-4 container">
-          <div class="mb-12 text-center">
-            <h2 class="mb-4 text-3xl text-gray-800 font-bold">
-              资质证书
-            </h2>
-            <p class="mx-auto max-w-2xl text-gray-600">
-              我们严格遵守食品安全标准，获得了多项权威认证
-            </p>
-          </div>
-
-          <!-- 证书类型筛选 -->
-          <div class="mb-8 flex flex-wrap justify-center gap-2">
-            <Button
-              v-for="type in certificateTypes"
-              :key="type.value"
-              :label="type.label"
-              class="p-button-rounded" :class="[
-                selectedType === type.value ? 'p-button-success' : 'p-button-outlined p-button-success',
-              ]"
-              @click="filterCertificates(type.value)"
-            />
-          </div>
-
-          <!-- 证书展示 -->
-          <div class="grid grid-cols-1 gap-6 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
-            <div
-              v-for="(certificate, index) in filteredCertificates"
-              :key="index"
-              class="overflow-hidden rounded-lg bg-white shadow-sm transition-shadow duration-300 hover:shadow-md"
-            >
-              <div class="relative cursor-pointer" @click="openCertificate(certificate)">
-                <img
-                  :src="certificate.image"
-                  :alt="certificate.name"
-                  class="h-48 w-full object-cover"
-                >
-                <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 transition-all duration-300 hover:bg-opacity-20">
-                  <i class="pi pi-search text-2xl text-white opacity-0 hover:opacity-100" />
-                </div>
-              </div>
-              <div class="p-4">
-                <h3 class="mb-2 text-lg text-gray-800 font-semibold">
-                  {{ certificate.name }}
-                </h3>
-                <div class="flex items-center justify-between">
-                  <span class="text-sm text-gray-500">有效期至: {{ certificate.validUntil }}</span>
-                  <Badge :value="certificate.type" :severity="getBadgeSeverity(certificate.type)" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 无结果提示 -->
-          <div v-if="filteredCertificates.length === 0" class="py-8 text-center">
-            <i class="pi pi-search mb-4 text-4xl text-gray-400" />
-            <p class="text-gray-500">
-              没有找到相关证书
-            </p>
-          </div>
-        </div>
-
-        <!-- 证书大图对话框 -->
-        <Dialog
-          v-model:visible="dialogVisible"
-          :header="selectedCertificate?.name"
-          :modal="true"
-          :dismissable-mask="true"
-          :style="{ width: '90vw', maxWidth: '800px' }"
-        >
-          <div class="flex flex-col">
-            <img
-              :src="selectedCertificate?.image"
-              :alt="selectedCertificate?.name"
-              class="mb-4 h-auto max-h-[70vh] w-full object-contain"
-            >
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div>
-                <h4 class="mb-1 text-sm text-gray-500 font-medium">
-                  证书类型
-                </h4>
-                <p class="text-gray-800">
-                  {{ getCertificateTypeName(selectedCertificate?.type) }}
-                </p>
-              </div>
-              <div>
-                <h4 class="mb-1 text-sm text-gray-500 font-medium">
-                  发证机构
-                </h4>
-                <p class="text-gray-800">
-                  {{ selectedCertificate?.issuedBy }}
-                </p>
-              </div>
-              <div>
-                <h4 class="mb-1 text-sm text-gray-500 font-medium">
-                  发证日期
-                </h4>
-                <p class="text-gray-800">
-                  {{ selectedCertificate?.issuedDate }}
-                </p>
-              </div>
-              <div>
-                <h4 class="mb-1 text-sm text-gray-500 font-medium">
-                  有效期至
-                </h4>
-                <p class="text-gray-800">
-                  {{ selectedCertificate?.validUntil }}
-                </p>
-              </div>
-            </div>
-            <div class="mt-4">
-              <h4 class="mb-1 text-sm text-gray-500 font-medium">
-                证书说明
-              </h4>
-              <p class="text-gray-800">
-                {{ selectedCertificate?.description }}
-              </p>
-            </div>
-          </div>
-        </Dialog>
-      </section>
-
-      <!-- 联系我们 CTA -->
-      <section class="from-green-600 to-green-200 bg-gradient-to-r py-100 py-16 text-white">
-        <div class="mx-auto px-4 text-center container">
-          <h2 class="mb-6 text-3xl font-bold">
-            想了解更多信息？
+          <h2 class="mb-4 text-3xl text-blue-900 font-bold">
+            我们的成长足迹
           </h2>
-          <p class="mx-auto mb-8 max-w-2xl text-xl">
-            如果您对我们的产品或服务有任何疑问，欢迎随时与我们联系
+          <div class="mx-auto mb-6 h-1 w-16 bg-sky-500" />
+          <p class="mx-auto max-w-3xl text-lg text-gray-700">
+            从创立至今，江西宏润配送有限公司不断发展壮大，成为江西地区食品供应链服务的领先企业
           </p>
-          <div class="flex flex-col justify-center gap-4 sm:flex-row">
+        </div>
+
+        <div class="relative">
+          <!-- 时间线 -->
+          <div class="absolute bottom-0 left-1/2 top-0 hidden w-1 transform bg-blue-200 md:block -translate-x-1/2" />
+
+          <div class="space-y-12">
+            <div v-for="(milestone, index) in milestones" :key="index" class="relative">
+              <div class="items-center md:grid md:grid-cols-2 md:gap-8">
+                <div :class="index % 2 === 0 ? 'md:text-right md:pr-12' : 'md:order-last md:text-left md:pl-12'">
+                  <div class="rounded-lg bg-white p-6 shadow-md transition-shadow hover:shadow-lg">
+                    <div class="mb-2 text-xl text-blue-900 font-bold">
+                      {{ milestone.year }}
+                    </div>
+                    <h3 class="mb-3 text-lg text-gray-800 font-bold">
+                      {{ milestone.title }}
+                    </h3>
+                    <p class="text-gray-600">
+                      {{ milestone.description }}
+                    </p>
+                  </div>
+                </div>
+                <div :class="index % 2 === 0 ? 'md:pl-12 md:order-last' : 'md:pr-12'">
+                  <div class="hidden md:block">
+                    <!-- <img :src="milestone.image" :alt="milestone.title" class="h-auto w-full rounded-lg shadow-md"> -->
+                  </div>
+                </div>
+              </div>
+              <!-- 时间点 -->
+              <div class="absolute left-1/2 top-1/2 hidden transform md:block -translate-x-1/2 -translate-y-1/2">
+                <div class="h-6 w-6 border-4 border-white rounded-full bg-sky-500" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 企业文化 -->
+    <section class="px-4 py-16">
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-12 text-center">
+          <div class="mb-4 inline-flex items-center justify-center rounded-full bg-sky-100 px-4 py-1 text-sm text-sky-700 font-medium">
+            <i class="pi pi-heart mr-2" />企业文化
+          </div>
+          <h2 class="mb-4 text-3xl text-blue-900 font-bold">
+            我们的价值观
+          </h2>
+          <div class="mx-auto mb-6 h-1 w-16 bg-sky-500" />
+          <p class="mx-auto max-w-3xl text-lg text-gray-700">
+            企业文化是我们的灵魂，指引着我们前进的方向和行动的准则
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-4 md:grid-cols-2">
+          <div
+            v-for="(value, index) in coreValues" :key="index"
+            class="border-t-4 rounded-xl bg-white p-6 shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+            :class="index % 2 === 0 ? 'border-blue-900' : 'border-sky-500'"
+          >
+            <div class="mx-auto mb-4 h-16 w-16 flex items-center justify-center rounded-full bg-gray-100">
+              <i style="font-size: 1.5rem" class="text-2xl" :class="[value.icon, index % 2 === 0 ? 'text-blue-900' : 'text-sky-500']" />
+            </div>
+            <h3 class="mb-3 text-center text-xl text-blue-900 font-bold">
+              {{ value.title }}
+            </h3>
+            <p class="text-center text-gray-600">
+              {{ value.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 团队介绍 -->
+    <section class="bg-gray-100 px-4 py-16">
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-12 text-center">
+          <div class="mb-4 inline-flex items-center justify-center rounded-full bg-sky-100 px-4 py-1 text-sm text-sky-700 font-medium">
+            <i class="pi pi-users mr-2" />团队介绍
+          </div>
+          <h2 class="mb-4 text-3xl text-blue-900 font-bold">
+            我们的专业团队
+          </h2>
+          <div class="mx-auto mb-6 h-1 w-16 bg-sky-500" />
+          <p class="mx-auto max-w-3xl text-lg text-gray-700">
+            我们拥有一支经验丰富、专业高效的团队，为客户提供优质的服务
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 md:grid-cols-2">
+          <div
+            v-for="(member, index) in teamMembers" :key="index"
+            class="group overflow-hidden rounded-xl bg-white shadow-md transition-all duration-300 hover:shadow-lg"
+          >
+            <div class="relative">
+              <!-- <img :src="member.image" :alt="member.name" class="h-64 w-full object-cover object-center"> -->
+              <div class="absolute inset-0 flex items-end from-black/70 to-transparent bg-gradient-to-t opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div class="w-full p-4">
+                  <div class="flex justify-center space-x-3">
+                    <a href="#" class="h-8 w-8 flex items-center justify-center rounded-full bg-white/20 transition-colors hover:bg-sky-500">
+                      <i class="pi pi-envelope text-white" />
+                    </a>
+                    <a href="#" class="h-8 w-8 flex items-center justify-center rounded-full bg-white/20 transition-colors hover:bg-sky-500">
+                      <i class="pi pi-phone text-white" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="mb-1 text-center text-xl text-blue-900 font-bold">
+                {{ member.name }}
+              </h3>
+              <p class="mb-3 text-center text-sky-500 font-medium">
+                {{ member.position }}
+              </p>
+              <p class="text-center text-gray-600">
+                {{ member.description }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 公司优势 -->
+    <section class="relative overflow-hidden from-blue-900 to-blue-800 bg-gradient-to-r px-4 py-16 text-white">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0 bg-repeat" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E');" />
+      </div>
+
+      <div class="relative z-10 mx-auto max-w-7xl">
+        <div class="mb-12 text-center">
+          <div class="mb-4 inline-flex items-center justify-center rounded-full bg-white/20 px-4 py-1 text-sm text-white font-medium">
+            <i class="pi pi-star mr-2" />公司优势
+          </div>
+          <h2 class="mb-4 text-3xl font-bold">
+            我们的核心竞争力
+          </h2>
+          <div class="mx-auto mb-6 h-1 w-16 bg-sky-400" />
+          <p class="mx-auto max-w-3xl text-lg opacity-90">
+            多年来，我们不断提升自身实力，形成了独特的竞争优势
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 md:grid-cols-2">
+          <div
+            v-for="(advantage, index) in advantages" :key="index"
+            class="rounded-xl bg-white/10 p-6 backdrop-blur-sm transition-colors hover:bg-white/15"
+          >
+            <div class="mx-auto mb-6 h-16 w-16 flex items-center justify-center rounded-full bg-sky-500">
+              <i style="font-size: 1.5rem" class="text-3xl text-white" :class="[advantage.icon]" />
+            </div>
+            <h3 class="mb-4 text-center text-xl font-bold">
+              {{ advantage.title }}
+            </h3>
+            <p class="text-center opacity-80">
+              {{ advantage.description }}
+            </p>
+            <div class="mt-6 border-t border-white/20 pt-4">
+              <ul class="space-y-2">
+                <li v-for="(point, pIndex) in advantage.points" :key="pIndex" class="flex items-start">
+                  <i class="pi pi-check-circle mr-2 mt-1 text-sky-300" />
+                  <span class="opacity-90">{{ point }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 资质证书 -->
+    <section class="px-4 py-16">
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-12 text-center">
+          <div class="mb-4 inline-flex items-center justify-center rounded-full bg-sky-100 px-4 py-1 text-sm text-sky-700 font-medium">
+            <i class="pi pi-verified mr-2" />资质证书
+          </div>
+          <h2 class="mb-4 text-3xl text-blue-900 font-bold">
+            我们的荣誉与认证
+          </h2>
+          <div class="mx-auto mb-6 h-1 w-16 bg-sky-500" />
+          <p class="mx-auto max-w-3xl text-lg text-gray-700">
+            我们拥有完善的资质认证，是您值得信赖的合作伙伴
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-4 md:grid-cols-2">
+          <div
+            v-for="(certificate, index) in certificates" :key="index"
+            class="rounded-xl bg-white p-6 shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+          >
+            <a :href="certificate.image" target="_blank">
+              <div class="mb-4 h-48 flex items-center justify-center rounded-lg bg-gray-50">
+                <img :src="certificate.image" :alt="certificate.name" class="max-h-40 max-w-full">
+              </div>
+              <h3 class="mb-2 text-center text-lg text-blue-900 font-bold">
+                {{ certificate.name }}
+              </h3>
+              <p class="text-center text-sm text-gray-500">
+                {{ certificate.issueDate }}
+              </p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 合作 -->
+    <section class="relative overflow-hidden bg-blue-900 px-4 py-16 text-white">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0 bg-repeat" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E');" />
+      </div>
+
+      <div class="relative z-10 mx-auto max-w-7xl">
+        <div class="mb-12 flex flex-col items-center">
+          <div class="mb-4 inline-flex items-center justify-center rounded-full bg-white/20 px-4 py-1 text-sm text-white font-medium">
+            <i class="pi pi-file-o mr-2" />最新业绩
+          </div>
+          <h2 class="mb-4 text-center text-3xl font-bold">
+            业绩
+          </h2>
+          <div class="mb-6 h-1 w-16 bg-sky-400" />
+        </div>
+
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div
+            v-for="(bid, index) in biddingInfo" :key="index"
+            class="flex flex-col justify-between rounded-xl bg-white/10 p-6 backdrop-blur-sm transition-colors hover:bg-white/15"
+          >
+            <div class="mb-4 flex items-start justify-between">
+              <h3 class="text-xl font-bold">
+                {{ bid.title }}
+              </h3>
+              <span
+                class="rounded-full px-3 py-1 text-xs font-medium"
+                :class="bid.status === '进行中' ? 'bg-sky-400 text-blue-900' : 'bg-gray-200 text-gray-700'"
+              >
+                {{ bid.status }}
+              </span>
+            </div>
+            <p class="mb-4 opacity-80">
+              {{ bid.description }}
+            </p>
+            <div class="grid grid-cols-2 mb-4 gap-4">
+              <div>
+                <p class="text-sm opacity-70">
+                  发布日期
+                </p>
+                <p class="font-medium">
+                  {{ bid.publishDate }}
+                </p>
+              </div>
+              <div>
+                <p class="text-sm opacity-70">
+                  截止日期
+                </p>
+                <p class="font-medium">
+                  {{ bid.endDate }}
+                </p>
+              </div>
+            </div>
             <Button
-              label="联系我们"
-              icon="pi pi-envelope"
-              class="p-button-rounded p-button-lg"
-              @click="navigateToContact"
-            />
-            <Button
-              label="查看产品"
-              icon="pi pi-shopping-bag"
-              class="p-button-rounded p-button-outlined p-button-lg text-white! hover:text-green-500!"
-              @click="navigateToProducts"
+              label="查看详情" icon="pi pi-external-link"
+              class="w-full border border-white/30 bg-transparent hover:bg-white/10"
             />
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   </MainLayout>
 </template>
+
+<style scoped>
+/* 自定义样式 */
+:deep(.p-button) {
+  transition: all 0.3s ease;
+}
+
+:deep(.p-button:hover) {
+  transform: translateY(-2px);
+}
+</style>

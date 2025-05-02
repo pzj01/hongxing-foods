@@ -9,7 +9,7 @@ function setChartData() {
   const documentStyle = getComputedStyle(document.documentElement)
 
   return {
-    labels: ['太湖燕饺', '迷你燕饺', '水晶包', '霞迷饺', '霞迷饺', '霞迷饺'],
+    labels: ['燕饺', '带鱼段', '水晶包', '冰冻猪肚', '冰冻猪肚', '冰冻猪肚'],
     datasets: [
       {
         label: '上一季度',

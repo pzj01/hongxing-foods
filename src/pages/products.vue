@@ -2,375 +2,240 @@
 import type { Category, Product } from '~/types'
 import { products } from '~/data/products'
 import { CategoryList } from '~/types'
-// 视图模式
-const viewMode = ref('grid') // 'grid' 或 'list'
 
-// 分页设置
-const pagination = ref({
-  first: 0,
-  rows: 6,
-  page: 0,
-})
+// 产品分类数据
+const categories = ref<Category[]>(CategoryList)
 
-// 排序选项
-const sortOptions = ref([
-  { name: '默认排序', value: 'default' },
-  { name: '价格从低到高', value: 'price-asc' },
-  { name: '价格从高到低', value: 'price-desc' },
-])
+const allProducts = ref<Product[]>([...products])
 
+// 筛选相关状态
+const selectedCategory = ref<Category | null>(null)
 const keyword = useLocalStorage('keyword', '')
+const searchQuery = ref(keyword.value)
 
-// 筛选条件
-const filters = ref({
-  search: keyword.value,
-  selectedCategories: [] as Category[],
-  priceRange: [0, 500],
-  sortBy: 'default',
-})
-
-watch(() => filters.value.search, (value) => {
+watch(searchQuery, (value) => {
   keyword.value = value
 })
 
-// 产品分类
-const categories = ref<Category[]>([...CategoryList])
-
-// 模拟产品数据
-const allProducts = ref<Product[]>(products)
-
-// 筛选后的产品
-const filteredProducts = computed(() => {
+// 分页相关状态
+const first = ref(0)
+const rows = ref(9)
+// 筛选产品
+const filteredProducts = computed<Product[]>(() => {
   let result = [...allProducts.value]
 
-  // 搜索筛选
-  if (filters.value.search) {
-    const searchLower = filters.value.search.toLowerCase()
+  // 按分类筛选
+  if (selectedCategory.value) {
+    result = result.filter(product => product.category === selectedCategory.value)
+  }
+
+  // 按搜索关键词筛选
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase().trim()
     result = result.filter(product =>
-      product.name.toLowerCase().includes(searchLower)
-      || product.description.toLowerCase().includes(searchLower),
+      product.name.toLowerCase().includes(query)
+      || product.description.toLowerCase().includes(query)
+      || product.tags.some(tag => tag.toLowerCase().includes(query)),
     )
-  }
-
-  // 分类筛选
-  if (filters.value.selectedCategories.length > 0) {
-    result = result.filter(product =>
-      filters.value.selectedCategories.includes(product.category),
-    )
-  }
-
-  // 价格范围筛选
-  result = result.filter(product =>
-    product.price >= filters.value.priceRange[0]
-    && product.price <= filters.value.priceRange[1],
-  )
-
-  // 排序
-  if (filters.value.sortBy === 'price-asc') {
-    result.sort((a, b) => a.price - b.price)
-  }
-  else if (filters.value.sortBy === 'price-desc') {
-    result.sort((a, b) => b.price - a.price)
-  }
-  else if (filters.value.sortBy === 'sales') {
-    // 这里假设我们有销量数据，但实际上我们没有，所以只是随机排序
-    result.sort(() => Math.random() - 0.5)
   }
 
   return result
 })
-
-// 分页后的产品
-const paginatedProducts = computed(() => {
-  const start = pagination.value.first
-  const end = pagination.value.first + pagination.value.rows
-  return filteredProducts.value.slice(start, end)
-})
-
-// 分页变化处理
-function onPageChange(event: any) {
-  pagination.value.first = event.first
-  pagination.value.rows = event.rows
-  pagination.value.page = event.page
-}
+const totalProducts = computed(() => filteredProducts.value.length)
 
 // 应用筛选
-function applyFilters() {
-  // 重置分页
-  pagination.value.first = 0
-  pagination.value.page = 0
+function filterProducts() {
+  first.value = 0 // 重置分页到第一页
 }
 
 // 重置筛选
 function resetFilters() {
-  filters.value = {
-    search: '',
-    selectedCategories: [],
-    priceRange: [0, 500],
-    sortBy: 'default',
-  }
-  // 重置分页
-  pagination.value.first = 0
-  pagination.value.page = 0
+  selectedCategory.value = null
+  searchQuery.value = ''
+  filterProducts()
 }
 
-// 生命周期钩子
+// 分页变化
+function onPageChange(event: any) {
+  first.value = event.first
+  rows.value = event.rows
+}
+
+// 页面加载时默认显示所有产品
 onMounted(() => {
-  // 可以在这里加载产品数据
+  filterProducts()
 })
 </script>
 
 <template>
   <MainLayout>
-    <main class="flex-grow">
-      <!-- 页面标题 -->
-      <section class="from-green-50 to-green-100 bg-gradient-to-r py-12">
-        <div class="mx-auto px-4 text-center container">
-          <h1 class="mb-4 text-4xl text-green-800 font-bold">
+    <!-- 页面标题 -->
+    <section class="relative overflow-hidden from-blue-900 to-blue-800 bg-gradient-to-r py-12 text-white md:py-20">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0 bg-repeat" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E');" />
+      </div>
+      <div class="relative z-10 mx-auto max-w-7xl px-4">
+        <div class="text-center">
+          <h1 class="mb-4 text-4xl font-bold md:text-5xl">
             产品中心
           </h1>
-          <p class="mx-auto max-w-2xl text-gray-700">
-            我们提供多种优质食品，满足您的各种需求。所有产品均经过严格筛选，确保品质与安全。
+          <p class="mx-auto max-w-3xl text-lg opacity-90 md:text-xl">
+            我们提供多种类型的优质食材，满足学校食堂等机构客户的多样化需求
           </p>
         </div>
-      </section>
+      </div>
+      <!-- 波浪分隔符 -->
+      <div class="absolute bottom-0 left-0 right-0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" class="h-auto w-full">
+          <path fill="#F9FAFB" fill-opacity="1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" />
+        </svg>
+      </div>
+    </section>
 
-      <!-- 产品筛选和列表 -->
-      <section class="bg-white py-12">
-        <div class="mx-auto px-4 container">
-          <div class="flex flex-col gap-8 lg:flex-row">
-            <!-- 筛选侧边栏 -->
-            <div class="lg:w-1/4">
-              <div class="sticky top-24 rounded-lg bg-gray-50 p-6 shadow-sm">
-                <h2 class="mb-6 text-xl text-gray-800 font-bold">
-                  产品筛选
-                </h2>
-
-                <div class="mb-6">
-                  <h3 class="mb-2 text-sm text-gray-700 font-medium">
-                    搜索
-                  </h3>
-                  <div class="relative">
-                    <InputText
-                      v-model.trim.lazy="filters.search"
-                      placeholder="搜索产品..."
-                      class="w-full pr-10"
-                    />
-                    <i class="pi pi-search absolute right-3 top-1/2 transform text-gray-400 -translate-y-1/2" />
-                  </div>
-                </div>
-
-                <div class="mb-6">
-                  <h3 class="mb-2 text-sm text-gray-700 font-medium">
-                    产品分类
-                  </h3>
-                  <div class="space-y-2">
-                    <div v-for="category in categories" :key="category" class="flex items-center">
-                      <Checkbox
-                        v-model="filters.selectedCategories"
-                        :input-id="`category-${category}`"
-                        :value="category"
-                        class="mr-2"
-                      />
-                      <label :for="`category-${category}`" class="cursor-pointer text-gray-700">
-                        {{ category }}
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mb-6">
-                  <h3 class="mb-2 text-sm text-gray-700 font-medium">
-                    价格范围
-                  </h3>
-                  <div class="px-2">
-                    <Slider
-                      v-model="filters.priceRange"
-                      range
-                      :min="0"
-                      :max="500"
-                      class="mt-4"
-                    />
-                    <div class="mt-2 flex justify-between text-sm text-gray-600">
-                      <span>¥{{ filters.priceRange[0] }}</span>
-                      <span>¥{{ filters.priceRange[1] }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mb-6">
-                  <h3 class="mb-2 text-sm text-gray-700 font-medium">
-                    排序方式
-                  </h3>
-                  <Dropdown
-                    v-model="filters.sortBy"
-                    :options="sortOptions"
-                    option-label="name"
-                    option-value="value"
-                    placeholder="选择排序方式"
-                    class="w-full"
-                  />
-                </div>
-
-                <div class="flex space-x-2">
-                  <Button
-                    label="应用筛选"
-                    class="p-button-success flex-grow"
-                    @click="applyFilters"
-                  />
-                  <Button
-                    icon="pi pi-refresh"
-                    class="p-button-outlined p-button-success"
-                    aria-label="重置筛选"
-                    @click="resetFilters"
-                  />
-                </div>
-              </div>
+    <!-- 产品筛选和展示 -->
+    <section class="px-4 py-12">
+      <div class="mx-auto max-w-7xl">
+        <!-- 筛选区域 -->
+        <div class="mb-8 rounded-xl bg-white p-6 shadow-md">
+          <h2 class="mb-4 text-xl text-blue-900 font-bold">
+            产品筛选
+          </h2>
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div>
+              <label class="mb-2 block text-sm text-gray-700 font-medium">产品分类</label>
+              <Select
+                v-model="selectedCategory"
+                :options="categories"
+                placeholder="选择产品分类"
+                class="w-full"
+                @change="filterProducts"
+              />
             </div>
 
-            <!-- 产品列表 -->
-            <div class="lg:w-3/4">
-              <!-- 排序和视图切换 -->
-              <div class="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-                <div>
-                  <h2 class="text-xl text-gray-800 font-bold">
-                    共找到 <span class="text-green-600">{{ filteredProducts.length }}</span> 个产品
-                  </h2>
-                </div>
-                <div class="flex items-center space-x-4">
-                  <span class="text-gray-700">视图：</span>
-                  <div class="flex overflow-hidden border rounded">
-                    <button
-                      class="flex items-center justify-center p-2"
-                      :class="viewMode === 'grid' ? 'bg-green-50 text-green-600' : 'bg-white text-gray-600'"
-                      @click="viewMode = 'grid'"
-                    >
-                      <i class="pi pi-th-large" />
-                    </button>
-                    <button
-                      class="flex items-center justify-center p-2"
-                      :class="viewMode === 'list' ? 'bg-green-50 text-green-600' : 'bg-white text-gray-600'"
-                      @click="viewMode = 'list'"
-                    >
-                      <i class="pi pi-list" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div v-if="filteredProducts.length === 0" class="py-8 text-center">
-                <p class="text-gray-600">
-                  没有找到匹配的产品
-                </p>
-              </div>
-
-              <!-- 网格视图 -->
-              <div v-if="viewMode === 'grid'" class="grid grid-cols-1 gap-6 lg:grid-cols-3 sm:grid-cols-2">
-                <div
-                  v-for="product in paginatedProducts"
-                  :key="product.id"
-                  class="overflow-hidden border border-gray-200 rounded-lg bg-white shadow-sm transition-transform duration-300 hover:shadow-md hover:-translate-y-1"
-                >
-                  <div class="relative">
-                    <img :src="product.image" :alt="product.name" class="h-48 w-full object-cover">
-                  </div>
-                  <div class="p-4">
-                    <div class="mb-2 flex items-start justify-between">
-                      <h3 class="text-lg text-gray-800 font-semibold">
-                        {{ product.name }}
-                      </h3>
-                      <Badge v-if="product.stockQuantity <= 10 && product.stockQuantity > 0" value="库存紧张" severity="warning" />
-                      <Badge v-else-if="product.stockQuantity === 0" value="售罄" severity="danger" />
-                    </div>
-                    <p class="line-clamp-2 mb-3 text-gray-600">
-                      {{ product.description }}
-                    </p>
-                    <div class="flex items-center justify-between">
-                      <span class="text-green-600 font-bold">¥{{ product.price.toFixed(2) }}</span>
-                      <!-- <Button
-                        icon="pi pi-shopping-cart"
-                        class="p-button-rounded p-button-success p-button-sm"
-                        :disabled="product.stock === 0"
-                        @click="addToCart(product)"
-                      /> -->
-                      <Button
-                        icon="pi pi-info"
-                        class="p-button-rounded p-button-success p-button-sm"
-                        @click="$router.push(`/details/${product.id}`)"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 列表视图 -->
-              <div v-else class="space-y-4">
-                <div
-                  v-for="product in paginatedProducts"
-                  :key="product.id"
-                  class="overflow-hidden border border-gray-200 rounded-lg bg-white shadow-sm transition-all duration-300 hover:shadow-md"
-                >
-                  <div class="flex flex-col sm:flex-row">
-                    <div class="relative sm:w-1/4">
-                      <img :src="product.image" :alt="product.name" class="h-48 w-full object-cover sm:h-full">
-                    </div>
-                    <div class="flex flex-col justify-between p-4 sm:w-3/4">
-                      <div>
-                        <div class="mb-2 flex items-start justify-between">
-                          <h3 class="text-xl text-gray-800 font-semibold">
-                            {{ product.name }}
-                          </h3>
-                          <Badge v-if="product.stockQuantity <= 10 && product.stockQuantity > 0" value="库存紧张" severity="warning" />
-                          <Badge v-else-if="product.stockQuantity === 0" value="售罄" severity="danger" />
-                        </div>
-                        <p class="mb-4 text-gray-600">
-                          {{ product.description }}
-                        </p>
-                        <div class="mb-4 flex flex-wrap gap-2">
-                          <Chip
-                            v-for="tag in product.tags"
-                            :key="tag"
-                            :label="tag"
-                            class="border-green-100 bg-green-50 text-green-600"
-                          />
-                        </div>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <span class="text-xl text-green-600 font-bold">¥{{ product.price.toFixed(2) }}</span>
-                        <!-- <Button
-                          label="加入购物车"
-                          icon="pi pi-shopping-cart"
-                          class="p-button-success"
-                          :disabled="product.stock === 0"
-                          @click="addToCart(product)"
-                        /> -->
-                        <Button
-                          label="查看详情"
-                          icon="pi pi-info"
-                          class="p-button-success p-button-sm"
-                          @click="$router.push(`/details/${product.id}`)"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 分页 -->
-              <div class="mt-8 flex justify-center">
-                <Paginator
-                  v-model:first="pagination.first"
-                  :rows="pagination.rows"
-                  :total-records="filteredProducts.length"
-                  :rows-per-page-options="[5, 10, 15]"
-                  template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                  @page="onPageChange($event)"
+            <div>
+              <label class="mb-2 block text-sm text-gray-700 font-medium">搜索</label>
+              <div class="relative">
+                <InputText
+                  v-model="searchQuery"
+                  placeholder="输入产品名称或关键词"
+                  class="w-full pl-10"
+                  @input="filterProducts"
                 />
               </div>
             </div>
           </div>
+          <div class="mt-4 flex justify-end">
+            <Button label="重置筛选" icon="pi pi-refresh" outlined class="mr-2" @click="resetFilters" />
+            <Button label="应用筛选" icon="pi pi-filter" class="border-blue-900 bg-blue-900" @click="filterProducts" />
+          </div>
         </div>
-      </section>
-    </main>
+
+        <!-- 产品展示 -->
+        <div v-if="filteredProducts.length > 0">
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 md:grid-cols-2">
+            <div
+              v-for="product in filteredProducts"
+              :key="product.id"
+              class="overflow-hidden rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg"
+            >
+              <div class="relative">
+                <img :src="product.image" :alt="product.name" class="h-48 w-full object-cover">
+                <div class="absolute right-0 top-0 m-2">
+                  <span class="rounded-full bg-sky-500 px-2 py-1 text-xs text-white font-bold">
+                    {{ product.category }}
+                  </span>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="mb-2 text-xl text-blue-900 font-bold">
+                  {{ product.name }}
+                </h3>
+                <p class="mb-4 text-gray-600">
+                  {{ product.description }}
+                </p>
+                <div class="mb-4 flex flex-wrap gap-2">
+                  <span
+                    v-for="(tag, index) in product.tags"
+                    :key="index"
+                    class="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600"
+                  >
+                    {{ tag }}
+                  </span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <Button
+                    label="查看详情"
+                    icon="pi pi-eye"
+                    class="border-blue-900 bg-blue-900"
+                    @click="$router.push(`/details/${product.id}`)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 分页 -->
+          <div class="mt-8 flex justify-center">
+            <Paginator
+              v-model:first="first"
+              :rows="rows"
+              :total-records="totalProducts"
+              :rows-per-page-options="[9, 18, 27]"
+              @page="onPageChange($event)"
+            />
+          </div>
+        </div>
+
+        <!-- 无结果提示 -->
+        <div v-else class="py-16 text-center">
+          <i class="pi pi-search mb-4 text-6xl text-gray-300" />
+          <h3 class="mb-2 text-xl text-gray-700 font-bold">
+            未找到匹配的产品
+          </h3>
+          <p class="mb-4 text-gray-500">
+            请尝试调整筛选条件或搜索关键词
+          </p>
+          <Button label="重置筛选" icon="pi pi-refresh" @click="resetFilters" />
+        </div>
+      </div>
+    </section>
   </MainLayout>
 </template>
+
+<style scoped>
+/* 自定义样式 */
+:deep(.p-menubar) {
+  padding: 0.75rem 1rem;
+  background: transparent;
+}
+
+:deep(.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight) {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+:deep(.p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight) {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+:deep(.p-paginator .p-paginator-pages .p-paginator-page.p-highlight) {
+  background-color: #0ea5e9;
+  color: #ffffff;
+}
+
+:deep(.p-dialog .p-dialog-header) {
+  background-color: #1e3a8a;
+  color: #ffffff;
+  padding: 1rem;
+}
+
+:deep(.p-dialog .p-dialog-content) {
+  padding: 0;
+}
+
+:deep(.p-dialog .p-dialog-footer) {
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+</style>
