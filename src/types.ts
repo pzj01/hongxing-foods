@@ -82,17 +82,19 @@ export interface Product extends Item {
 }
 
 export enum Category {
-  DumplingsAndBuns = '饺子与包点',
-  Meatballs = '肉丸与贡丸',
+  PoultryProducts = '禽类制品',
   MeatProducts = '肉类制品',
-  Sausages = '香肠与热狗肠',
+  FishAndSeafoodProducts = '鱼糜及水产制品',
+  SausagesAndProcessedMeat = '香肠及加工肉制品',
+  SpecialtyFoods = '其他特色食品',
 }
 
 export const CategoryList: Category[] = [
-  Category.DumplingsAndBuns,
-  Category.Meatballs,
+  Category.PoultryProducts,
   Category.MeatProducts,
-  Category.Sausages,
+  Category.FishAndSeafoodProducts,
+  Category.SausagesAndProcessedMeat,
+  Category.SpecialtyFoods,
 ]
 
 export enum PackagingType {
@@ -108,9 +110,14 @@ export enum Unit {
   BOTTLE = '瓶',
   BAG = '袋',
   BOX = '盒',
+  BARREL = '桶',
+  CARTON = '箱',
+  PIECE = '只',
 }
 
 export enum WeightUnit {
+  KCAL = '千卡',
+  TON = '吨',
   KG = '千克',
   G = '克',
   MG = '毫克',
@@ -127,6 +134,9 @@ export const PackagingTypeList = [
 ]
 
 export const UnitList = [
+  Unit.PIECE,
+  Unit.CARTON,
+  Unit.BARREL,
   Unit.BAG,
   Unit.BOTTLE,
   Unit.BOX,
@@ -134,6 +144,8 @@ export const UnitList = [
 ]
 
 export const WeightUnitList = [
+  WeightUnit.KCAL,
+  WeightUnit.TON,
   WeightUnit.G,
   WeightUnit.KG,
   WeightUnit.L,

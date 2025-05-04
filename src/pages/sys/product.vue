@@ -150,7 +150,7 @@ function clickDelete() {
               <i i-carbon-trash-can />
             </template>
           </Button>
-          <Button severity="warn" label="修改产品" @click="clickEdit">
+          <Button severity="secondary" label="修改产品" @click="clickEdit">
             <template #icon>
               <i i-carbon-edit />
             </template>

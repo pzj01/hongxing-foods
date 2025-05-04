@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css'
 let map: L.Map | null
 
 onMounted(() => setTimeout(initMap, 300))
-const coords = [27.62, 113.85] as LatLngTuple
+const coords = [27.61, 113.85] as LatLngTuple
 
 function initMap() {
   map = L.map('map', {

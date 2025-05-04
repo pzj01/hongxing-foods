@@ -1,18 +1,11 @@
 <script setup lang="ts">
-// 表单数据
-interface FormData {
-  name: string
-  company: string
-  phone: string
-  email: string
-  subject: any
-  message: string
-  agreement: boolean
-}
+import { useVuelidate } from '@vuelidate/core'
+import { email, helpers, required } from '@vuelidate/validators'
+import { Bus, Car, CheckCircle, Clock, Mail, MapPin, Phone, QrCode } from 'lucide-vue-next'
 
-const form = ref<FormData>({
+// 联系表单
+const contactForm = reactive({
   name: '',
-  company: '',
   phone: '',
   email: '',
   subject: null,
@@ -20,464 +13,638 @@ const form = ref<FormData>({
   agreement: false,
 })
 
-// 咨询主题选项
-const subjectOptions = ref([
+// 表单验证规则
+const rules = {
+  name: { required: helpers.withMessage('请输入您的姓名', required) },
+  phone: { required: helpers.withMessage('请输入您的电话', required) },
+  email: {
+    required: helpers.withMessage('请输入您的邮箱', required),
+    email: helpers.withMessage('请输入有效的邮箱地址', email),
+  },
+  subject: { required: helpers.withMessage('请选择主题', required) },
+  message: { required: helpers.withMessage('请输入您的消息', required) },
+  agreement: {
+    required: helpers.withMessage('请同意隐私政策', (value: boolean) => value === true),
+  },
+}
+
+const v$ = useVuelidate(rules, contactForm)
+
+// 提交状态
+const submitting = ref(false)
+const showSuccessDialog = ref(false)
+
+// 提交表单
+async function submitForm() {
+  const isFormValid = await v$.value.$validate()
+
+  if (isFormValid) {
+    submitting.value = true
+
+    // 模拟API请求
+    setTimeout(() => {
+      submitting.value = false
+      showSuccessDialog.value = true
+
+      // 重置表单
+      contactForm.name = ''
+      contactForm.phone = ''
+      contactForm.email = ''
+      contactForm.subject = null
+      contactForm.message = ''
+      contactForm.agreement = false
+
+      // 重置验证状态
+      v$.value.$reset()
+    }, 1500)
+  }
+}
+
+// 主题选项
+const subjectOptions = [
   { name: '产品咨询', code: 'product' },
-  { name: '价格咨询', code: 'price' },
   { name: '配送服务', code: 'delivery' },
   { name: '合作洽谈', code: 'cooperation' },
   { name: '投诉建议', code: 'feedback' },
   { name: '其他', code: 'other' },
-])
+]
 
-// 表单提交状态
-const loading = ref(false)
-
-// 表单提交方法
-function submitForm() {
-  loading.value = true
-
-  // 模拟表单提交
-  setTimeout(() => {
-    loading.value = false
-    // eslint-disable-next-line no-alert
-    alert('您的留言已提交成功，我们将尽快与您联系！')
-
-    // 重置表单
-    form.value = {
-      name: '',
-      company: '',
-      phone: '',
-      email: '',
-      subject: null,
-      message: '',
-      agreement: false,
-    }
-  }, 1500)
-}
-
-// 常见问题数据
-interface FAQ {
-  question: string
-  answer: string
-}
-
-const faqs = ref<FAQ[]>([
+// 常见问题
+const faqs = [
   {
-    question: '你们的配送范围有哪些？',
-    answer: '我们的配送范围主要覆盖江西省全境，包括南昌、九江、赣州、上饶等主要城市。对于大型客户，我们也可以提供跨省配送服务，具体请联系我们的客服人员咨询。',
+    question: '你们的配送范围是哪些地区？',
+    answer: '我们目前的配送范围主要覆盖萍乡市区及周边地区，包括安源区、湘东区、莲花县、上栗县和芦溪县。如果您在这些区域之外，可以联系我们的客服，我们会根据具体情况为您安排配送。',
   },
   {
-    question: '如何成为你们的供应商？',
-    answer: '我们欢迎优质的供应商加入我们的供应链网络。成为我们的供应商需要通过严格的资质审核和产品质量检测。如果您有意向，请发送相关资质和产品信息至business@jxhongrun.com，我们的采购团队会与您联系。',
+    question: '如何成为你们的合作学校？',
+    answer: '学校可以通过电话、邮件或在线表单联系我们的商务部门。我们会安排专业的客户经理与您沟通，了解您的需求，并提供定制化的食材配送方案。我们会根据学校的规模、学生数量和餐饮需求，制定合适的合作计划。',
   },
   {
     question: '你们的食品安全如何保障？',
-    answer: '我们建立了完善的食品安全管理体系，获得了ISO9001质量管理体系认证和HACCP食品安全管理体系认证。我们对供应商有严格的筛选标准，对食材进行定期检测，并实施全程冷链物流，确保食品安全。',
+    answer: '我们非常重视食品安全，已获得ISO9001质量管理体系认证和HACCP食品安全管理体系认证。我们从源头把控食材质量，所有供应商都经过严格筛选，并定期进行食品安全检测。我们的冷链物流系统确保食材在运输过程中保持新鲜和安全。',
   },
   {
-    question: '最小起订量是多少？',
-    answer: '不同产品的最小起订量有所不同，一般来说，我们针对学校食堂等机构客户，会根据实际需求量进行定制化配送，没有严格的最小起订量限制。具体请联系我们的销售人员咨询。',
+    question: '是否提供紧急配送服务？',
+    answer: '是的，我们提供紧急配送服务。如果您有紧急需求，可以联系我们的客服热线，我们会尽快安排配送。不过，为了确保服务质量，我们建议客户提前规划订单，以便我们更好地安排物流和配送。',
   },
   {
-    question: '如何申请退换货？',
-    answer: '如果您收到的产品有质量问题，请在收货后24小时内联系我们的客服人员，提供相关证据（如照片），我们会根据实际情况安排退换货或赔偿。对于非质量问题的退换货，需根据具体合同条款处理。',
+    question: '如何查询订单状态？',
+    answer: '您可以通过我们的官方网站或微信公众号登录账户查询订单状态。输入订单号或通过账户历史记录，可以查看订单的处理状态、配送进度等信息。如有任何问题，也可以直接联系我们的客服团队。',
   },
-])
+  {
+    question: '你们接受退换货吗？',
+    answer: '我们接受因产品质量问题导致的退换货。如果您收到的产品有质量问题，请在收货后24小时内联系我们的客服，并提供相关证据（如照片）。我们会根据实际情况为您安排退换货或赔偿。对于非质量问题的退换货，需根据具体情况评估。',
+  },
+]
+
+// 在线客服
+function openChat() {
+  // 实际项目中，这里会打开在线客服系统
+  // eslint-disable-next-line no-alert
+  alert('在线客服功能即将上线，敬请期待！')
+}
+
+// 订阅相关
+const newsletter = reactive({
+  name: '',
+  email: '',
+})
+
+const subscribing = ref(false)
+const showSubscribeDialog = ref(false)
+
+// 订阅通讯
+function subscribeNewsletter() {
+  if (!newsletter.email) {
+    // eslint-disable-next-line no-alert
+    alert('请输入您的邮箱地址')
+    return
+  }
+
+  subscribing.value = true
+
+  // 模拟API请求
+  setTimeout(() => {
+    subscribing.value = false
+    showSubscribeDialog.value = true
+
+    // 重置表单
+    newsletter.name = ''
+    newsletter.email = ''
+  }, 1500)
+}
 </script>
 
 <template>
   <MainLayout>
-    <!-- 页面标题 -->
-    <section class="relative overflow-hidden from-blue-900 to-blue-800 bg-gradient-to-r py-12 text-white md:py-20">
-      <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0 bg-repeat" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E');" />
-      </div>
-      <div class="relative z-10 mx-auto max-w-7xl px-4">
-        <div class="text-center">
-          <h1 class="mb-4 text-4xl font-bold md:text-5xl">
+    <!-- 页面标题区 -->
+    <section class="relative overflow-hidden pb-20 pt-32">
+      <div class="absolute inset-0 z-0 from-amber-900/70 to-transparent bg-gradient-to-b" />
+      <div class="relative z-10 mx-auto px-6 container">
+        <div class="mx-auto max-w-3xl text-center">
+          <h1 class="mb-6 text-5xl text-white font-bold leading-tight md:text-6xl">
             联系我们
           </h1>
-          <p class="mx-auto max-w-3xl text-lg opacity-90 md:text-xl">
-            我们期待听到您的声音，随时为您提供专业的食品供应链解决方案
+          <p class="mb-10 text-xl text-white/90">
+            我们期待听到您的声音，无论是咨询、合作还是建议，都欢迎与我们联系
           </p>
         </div>
       </div>
-      <!-- 波浪分隔符 -->
-      <div class="absolute bottom-0 left-0 right-0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" class="h-auto w-full">
-          <path fill="#F9FAFB" fill-opacity="1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z" />
+
+      <div class="absolute bottom-0 left-0 w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="h-auto w-full">
+          <path fill="#ffffff" fill-opacity="1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,208C1248,192,1344,192,1392,192L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" />
         </svg>
       </div>
     </section>
 
-    <!-- 联系信息和地图 -->
-    <section class="px-4 py-16">
-      <div class="mx-auto max-w-7xl">
-        <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
-          <!-- 联系信息 -->
-          <div>
-            <div class="mb-4 inline-flex items-center justify-center rounded-full bg-sky-100 px-4 py-1 text-sm text-sky-700 font-medium">
-              <i class="pi pi-phone mr-2" />联系方式
+    <!-- 联系信息卡片 -->
+    <section class="relative bg-white py-16 -mt-10">
+      <div class="mx-auto px-6 container">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-4 md:grid-cols-2">
+          <div class="transform rounded-2xl bg-white p-8 shadow-lg transition-transform hover:scale-105 hover:shadow-xl">
+            <div class="mx-auto mb-6 h-16 w-16 flex items-center justify-center rounded-full bg-amber-100">
+              <MapPin class="h-8 w-8 text-amber-600" />
             </div>
-            <h2 class="mb-6 text-3xl text-blue-900 font-bold">
-              随时为您服务
-            </h2>
-            <div class="mb-8 h-1 w-16 bg-sky-500" />
-
-            <div class="space-y-8">
-              <div class="flex items-start">
-                <div class="mr-4 h-12 w-12 flex flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
-                  <i class="pi pi-map-marker text-xl text-blue-900" />
-                </div>
-                <div>
-                  <h3 class="mb-2 text-lg text-blue-900 font-bold">
-                    公司地址
-                  </h3>
-                  <p class="text-gray-700">
-                    江西省萍乡市安源区八一街汪公潭居委会公潭路
-                  </p>
-                  <p class="text-gray-700">
-                    邮编: 337000
-                  </p>
-                </div>
-              </div>
-
-              <div class="flex items-start">
-                <div class="mr-4 h-12 w-12 flex flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
-                  <i class="pi pi-phone text-xl text-blue-900" />
-                </div>
-                <div>
-                  <h3 class="mb-2 text-lg text-blue-900 font-bold">
-                    联系电话
-                  </h3>
-                  <p class="text-gray-700">
-                    客服热线: 0791-88888888
-                  </p>
-                  <p class="text-gray-700">
-                    业务咨询: 0791-66666666
-                  </p>
-                </div>
-              </div>
-
-              <div class="flex items-start">
-                <div class="mr-4 h-12 w-12 flex flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
-                  <i class="pi pi-envelope text-xl text-blue-900" />
-                </div>
-                <div>
-                  <h3 class="mb-2 text-lg text-blue-900 font-bold">
-                    电子邮箱
-                  </h3>
-                  <p class="text-gray-700">
-                    客户服务: service@jxhongrun.com
-                  </p>
-                  <p class="text-gray-700">
-                    商务合作: business@jxhongrun.com
-                  </p>
-                </div>
-              </div>
-
-              <div class="flex items-start">
-                <div class="mr-4 h-12 w-12 flex flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
-                  <i class="pi pi-clock text-xl text-blue-900" />
-                </div>
-                <div>
-                  <h3 class="mb-2 text-lg text-blue-900 font-bold">
-                    办公时间
-                  </h3>
-                  <p class="text-gray-700">
-                    周一至周五: 上午 8:30 - 下午 5:30
-                  </p>
-                  <p class="text-gray-700">
-                    周六: 上午 9:00 - 下午 1:00
-                  </p>
-                  <p class="text-gray-700">
-                    周日: 休息
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-8">
-              <h3 class="mb-4 text-lg text-blue-900 font-bold">
-                关注我们
-              </h3>
-              <div class="flex space-x-4">
-                <a href="#" class="h-10 w-10 flex items-center justify-center rounded-full bg-gray-200 transition-colors hover:bg-sky-500 hover:text-white">
-                  <i class="pi pi-twitter" />
-                </a>
-                <a href="#" class="h-10 w-10 flex items-center justify-center rounded-full bg-gray-200 transition-colors hover:bg-sky-500 hover:text-white">
-                  <i class="pi pi-comments" />
-                </a>
-                <a href="#" class="h-10 w-10 flex items-center justify-center rounded-full bg-gray-200 transition-colors hover:bg-sky-500 hover:text-white">
-                  <i class="pi pi-globe" />
-                </a>
-              </div>
-            </div>
+            <h3 class="mb-3 text-center text-xl text-amber-800 font-bold">
+              公司地址
+            </h3>
+            <p class="text-center text-amber-700">
+              萍乡市安源区<br>城南宝塔路45号
+            </p>
           </div>
 
-          <!-- 地图 -->
-          <div>
-            <div class="overflow-hidden rounded-xl bg-white shadow-lg">
-              <div class="relative">
-                <!-- 这里使用一个静态地图图片作为占位符，实际应用中可替换为真实地图组件 -->
-                <LeafletMap h-96 />
-
-                <!-- 地图标记 -->
-                <!-- <div class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <div class="h-16 w-16 flex animate-pulse items-center justify-center rounded-full bg-blue-900">
-                    <div class="h-8 w-8 flex items-center justify-center rounded-full bg-sky-500">
-                      <i class="pi pi-map-marker text-white" />
-                    </div>
-                  </div>
-                  <div class="absolute left-1/2 h-4 w-4 transform rounded-full bg-blue-900 -bottom-2 -translate-x-1/2" />
-                </div> -->
-
-                <!-- 地图控制按钮 -->
-                <div class="absolute bottom-4 right-4 flex space-x-2">
-                  <button class="h-8 w-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-100">
-                    <i class="pi pi-plus" />
-                  </button>
-                  <button class="h-8 w-8 flex items-center justify-center rounded-full bg-white shadow-md hover:bg-gray-100">
-                    <i class="pi pi-minus" />
-                  </button>
-                </div>
-              </div>
-
-              <div class="border-t border-gray-100 p-4">
-                <h3 class="text-blue-900 font-bold">
-                  江西宏润配送有限公司
-                </h3>
-                <p class="text-sm text-gray-600">
-                  江西省萍乡市安源区八一街汪公潭居委会公潭路
-                </p>
-                <div class="mt-2 flex justify-between">
-                  <Button label="查看路线" icon="pi pi-directions" outlined class="p-button-sm" />
-                  <Button label="导航到这里" icon="pi pi-map" class="p-button-sm border-blue-900 bg-blue-900" />
-                </div>
-              </div>
+          <div class="transform rounded-2xl bg-white p-8 shadow-lg transition-transform hover:scale-105 hover:shadow-xl">
+            <div class="mx-auto mb-6 h-16 w-16 flex items-center justify-center rounded-full bg-amber-100">
+              <Phone class="h-8 w-8 text-amber-600" />
             </div>
+            <h3 class="mb-3 text-center text-xl text-amber-800 font-bold">
+              联系电话
+            </h3>
+            <p class="text-center text-amber-700">
+              客服热线: 0799-XXXXXXXX<br>
+              业务咨询: 0799-XXXXXXXX<br>
+              手机: 138-XXXX-XXXX
+            </p>
+          </div>
 
-            <!-- 交通指南 -->
-            <div class="mt-8 rounded-xl bg-white p-6 shadow-md">
-              <h3 class="mb-4 text-lg text-blue-900 font-bold">
-                交通指南
-              </h3>
-              <div class="space-y-4">
-                <div class="flex items-start">
-                  <div class="mr-3 h-8 w-8 flex flex-shrink-0 items-center justify-center rounded-full bg-sky-100">
-                    <i class="pi pi-car text-sky-500" />
-                  </div>
-                  <div>
-                    <h4 class="text-gray-800 font-bold">
-                      自驾路线
-                    </h4>
-                    <p class="text-sm text-gray-600">
-                      导航至"江西省萍乡市安源区八一街汪公潭居委会公潭路"，公司附近有专用停车场。
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex items-start">
-                  <div class="mr-3 h-8 w-8 flex flex-shrink-0 items-center justify-center rounded-full bg-sky-100">
-                    <i class="pi pi-ticket text-sky-500" />
-                  </div>
-                  <div>
-                    <h4 class="text-gray-800 font-bold">
-                      公共交通
-                    </h4>
-                    <p class="text-sm text-gray-600">
-                      乘坐9路，公交车至"安源宾馆"下车，步行约600米即到。
-                    </p>
-                    <p class="text-sm text-gray-600">
-                      乘坐3路，公交车至"八一街办事处"下车，步行约200米即到。
-                    </p>
-                  </div>
-                </div>
-              </div>
+          <div class="transform rounded-2xl bg-white p-8 shadow-lg transition-transform hover:scale-105 hover:shadow-xl">
+            <div class="mx-auto mb-6 h-16 w-16 flex items-center justify-center rounded-full bg-amber-100">
+              <Mail class="h-8 w-8 text-amber-600" />
             </div>
+            <h3 class="mb-3 text-center text-xl text-amber-800 font-bold">
+              电子邮箱
+            </h3>
+            <p class="text-center text-amber-700">
+              客户服务: service@hongxingfood.com<br>
+              商务合作: business@hongxingfood.com<br>
+              人力资源: hr@hongxingfood.com
+            </p>
+          </div>
+
+          <div class="transform rounded-2xl bg-white p-8 shadow-lg transition-transform hover:scale-105 hover:shadow-xl">
+            <div class="mx-auto mb-6 h-16 w-16 flex items-center justify-center rounded-full bg-amber-100">
+              <Clock class="h-8 w-8 text-amber-600" />
+            </div>
+            <h3 class="mb-3 text-center text-xl text-amber-800 font-bold">
+              营业时间
+            </h3>
+            <p class="text-center text-amber-700">
+              周一至周五: 8:00 - 18:00<br>
+              周六: 9:00 - 16:00<br>
+              周日: 休息
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 联系表单 -->
-    <section class="bg-gray-100 px-4 py-16">
-      <div class="mx-auto max-w-7xl">
-        <div class="mb-12 text-center">
-          <div class="mb-4 inline-flex items-center justify-center rounded-full bg-sky-100 px-4 py-1 text-sm text-sky-700 font-medium">
-            <i class="pi pi-send mr-2" />留言咨询
+    <!-- 地图和联系表单 -->
+    <section class="relative bg-amber-50 py-16">
+      <div class="mx-auto px-6 container">
+        <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+          <!-- 地图部分 -->
+          <div class="order-2 lg:order-1">
+            <h2 class="relative mb-6 inline-block text-3xl text-amber-800 font-bold">
+              我们的位置
+              <span class="absolute left-0 h-1 w-1/2 bg-amber-500 -bottom-2" />
+            </h2>
+            <p class="mb-6 text-lg text-amber-700">
+              我们位于萍乡市安源区城南宝塔路45号，交通便利，欢迎您前来参观访问。
+            </p>
+
+            <!-- 地图容器 -->
+            <div class="relative mb-6 h-[400px] overflow-hidden rounded-2xl shadow-xl">
+              <LeafletMap />
+            </div>
+
+            <!-- 交通指南 -->
+            <div class="rounded-xl bg-white p-6 shadow-md">
+              <h3 class="mb-4 text-xl text-amber-800 font-bold">
+                交通指南
+              </h3>
+              <div class="space-y-4">
+                <div class="flex items-start">
+                  <div class="mr-3 h-8 w-8 flex shrink-0 items-center justify-center rounded-full bg-amber-100">
+                    <Car class="h-4 w-4 text-amber-600" />
+                  </div>
+                  <div>
+                    <h4 class="text-amber-800 font-semibold">
+                      自驾路线
+                    </h4>
+                    <p class="text-amber-700">
+                      打开地图导航，输入"萍乡市安源区城南宝塔路45号"即可到达。
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-start">
+                  <div class="mr-3 h-8 w-8 flex shrink-0 items-center justify-center rounded-full bg-amber-100">
+                    <Bus class="h-4 w-4 text-amber-600" />
+                  </div>
+                  <div>
+                    <h4 class="text-amber-800 font-semibold">
+                      公共交通
+                    </h4>
+                    <p class="text-amber-700">
+                      萍乡火车站下，乘坐1路公交车至"城南客运站"下车，步行约100米即可到达。
+                    </p>
+                    <p class="mt-2 text-amber-700">
+                      萍乡北站下，乘坐9路公交车至"城南站"下车，步行约150米即可到达。
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <h2 class="mb-4 text-3xl text-blue-900 font-bold">
-            有任何问题？请联系我们
-          </h2>
-          <div class="mx-auto mb-6 h-1 w-16 bg-sky-500" />
-          <p class="mx-auto max-w-3xl text-lg text-gray-700">
-            填写下面的表单，我们的客服人员将在24小时内与您联系
-          </p>
-        </div>
 
-        <div class="mx-auto max-w-4xl rounded-xl bg-white p-8 shadow-md">
-          <form @submit.prevent="submitForm">
-            <div class="grid grid-cols-1 mb-6 gap-6 md:grid-cols-2">
-              <div>
-                <label for="name" class="mb-1 block text-sm text-gray-700 font-medium">姓名</label>
-                <InputText id="name" v-model="form.name" placeholder="请输入您的姓名" class="w-full" />
-              </div>
-              <div>
-                <label for="company" class="mb-1 block text-sm text-gray-700 font-medium">公司名称</label>
-                <InputText id="company" v-model="form.company" placeholder="请输入您的公司名称" class="w-full" />
-              </div>
-              <div>
-                <label for="phone" class="mb-1 block text-sm text-gray-700 font-medium">联系电话</label>
-                <InputText id="phone" v-model="form.phone" placeholder="请输入您的联系电话" class="w-full" />
-              </div>
-              <div>
-                <label for="email" class="mb-1 block text-sm text-gray-700 font-medium">电子邮箱</label>
-                <InputText id="email" v-model="form.email" placeholder="请输入您的电子邮箱" class="w-full" />
-              </div>
-            </div>
+          <!-- 联系表单 -->
+          <div class="order-1 lg:order-2">
+            <h2 class="relative mb-6 inline-block text-3xl text-amber-800 font-bold">
+              发送消息
+              <span class="absolute left-0 h-1 w-1/2 bg-amber-500 -bottom-2" />
+            </h2>
+            <p class="mb-6 text-lg text-amber-700">
+              如果您有任何问题或需求，请填写下面的表单，我们会尽快回复您。
+            </p>
 
-            <div class="mb-6">
-              <label for="subject" class="mb-1 block text-sm text-gray-700 font-medium">咨询主题</label>
-              <Dropdown id="subject" v-model="form.subject" :options="subjectOptions" option-label="name" placeholder="请选择咨询主题" class="w-full" />
-            </div>
+            <div class="rounded-2xl bg-white p-8 shadow-xl">
+              <form class="space-y-6" @submit.prevent="submitForm">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div class="p-field">
+                    <label for="name" class="mb-2 block text-amber-800 font-medium">姓名 <span class="text-red-500">*</span></label>
+                    <InputText
+                      id="name"
+                      v-model="contactForm.name"
+                      class="custom-input w-full"
+                      :class="{ 'p-invalid': v$.name.$error }"
+                      aria-describedby="name-error"
+                    />
+                    <small v-if="v$.name.$error" id="name-error" class="p-error mt-1 block">
+                      {{ v$.name.$errors[0].$message }}
+                    </small>
+                  </div>
 
-            <div class="mb-6">
-              <label for="message" class="mb-1 block text-sm text-gray-700 font-medium">留言内容</label>
-              <Textarea id="message" v-model="form.message" placeholder="请输入您的留言内容" rows="5" class="w-full" />
-            </div>
+                  <div class="p-field">
+                    <label for="phone" class="mb-2 block text-amber-800 font-medium">电话 <span class="text-red-500">*</span></label>
+                    <InputText
+                      id="phone"
+                      v-model="contactForm.phone"
+                      class="custom-input w-full"
+                      :class="{ 'p-invalid': v$.phone.$error }"
+                      aria-describedby="phone-error"
+                    />
+                    <small v-if="v$.phone.$error" id="phone-error" class="p-error mt-1 block">
+                      {{ v$.phone.$errors[0].$message }}
+                    </small>
+                  </div>
+                </div>
 
-            <div class="mb-6 flex items-center">
-              <Checkbox id="agreement" v-model="form.agreement" :binary="true" />
-              <label for="agreement" class="ml-2 text-sm text-gray-600">
-                我同意根据<a href="#" class="text-sky-600 hover:underline">隐私政策</a>处理我的个人数据
-              </label>
-            </div>
+                <div class="p-field">
+                  <label for="email" class="mb-2 block text-amber-800 font-medium">邮箱 <span class="text-red-500">*</span></label>
+                  <InputText
+                    id="email"
+                    v-model="contactForm.email"
+                    class="custom-input w-full"
+                    :class="{ 'p-invalid': v$.email.$error }"
+                    aria-describedby="email-error"
+                  />
+                  <small v-if="v$.email.$error" id="email-error" class="p-error mt-1 block">
+                    {{ v$.email.$errors[0].$message }}
+                  </small>
+                </div>
 
-            <div class="flex justify-center">
-              <Button type="submit" label="提交留言" icon="pi pi-send" class="border-blue-900 bg-blue-900 px-8" :loading="loading" />
+                <div class="p-field">
+                  <label for="subject" class="mb-2 block text-amber-800 font-medium">主题 <span class="text-red-500">*</span></label>
+                  <Dropdown
+                    id="subject"
+                    v-model="contactForm.subject"
+                    :options="subjectOptions"
+                    option-label="name"
+                    placeholder="选择主题"
+                    class="custom-dropdown w-full"
+                    :class="{ 'p-invalid': v$.subject.$error }"
+                    aria-describedby="subject-error"
+                  />
+                  <small v-if="v$.subject.$error" id="subject-error" class="p-error mt-1 block">
+                    {{ v$.subject.$errors[0].$message }}
+                  </small>
+                </div>
+
+                <div class="p-field">
+                  <label for="message" class="mb-2 block text-amber-800 font-medium">消息 <span class="text-red-500">*</span></label>
+                  <Textarea
+                    id="message"
+                    v-model="contactForm.message"
+                    rows="5"
+                    class="custom-textarea w-full"
+                    :class="{ 'p-invalid': v$.message.$error }"
+                    aria-describedby="message-error"
+                  />
+                  <small v-if="v$.message.$error" id="message-error" class="p-error mt-1 block">
+                    {{ v$.message.$errors[0].$message }}
+                  </small>
+                </div>
+
+                <div class="flex items-center">
+                  <Checkbox
+                    id="agreement"
+                    v-model="contactForm.agreement"
+                    :binary="true"
+                    class="mr-2"
+                    :class="{ 'p-invalid': v$.agreement.$error }"
+                  />
+                  <label for="agreement" class="text-amber-700">
+                    我同意根据<a href="#" class="text-amber-600 hover:underline">隐私政策</a>处理我的个人数据
+                    <span class="text-red-500">*</span>
+                  </label>
+                </div>
+                <small v-if="v$.agreement.$error" class="p-error block">
+                  {{ v$.agreement.$errors[0].$message }}
+                </small>
+
+                <Button
+                  type="submit"
+                  label="发送消息"
+                  icon="pi pi-send"
+                  class="p-button-rounded custom-button w-full"
+                  :loading="submitting"
+                />
+              </form>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- 常见问题 -->
-    <section class="px-4 py-16">
-      <div class="mx-auto max-w-7xl">
-        <div class="mb-12 text-center">
-          <div class="mb-4 inline-flex items-center justify-center rounded-full bg-sky-100 px-4 py-1 text-sm text-sky-700 font-medium">
-            <i class="pi pi-question-circle mr-2" />常见问题
-          </div>
-          <h2 class="mb-4 text-3xl text-blue-900 font-bold">
-            常见问题解答
+    <section class="relative bg-white py-16">
+      <div class="mx-auto px-6 container">
+        <div class="mb-16 text-center">
+          <h2 class="relative mb-4 inline-block text-3xl text-amber-800 font-bold md:text-4xl">
+            常见问题
+            <span class="absolute left-1/4 h-1 w-1/2 bg-amber-500 -bottom-2" />
           </h2>
-          <div class="mx-auto mb-6 h-1 w-16 bg-sky-500" />
-          <p class="mx-auto max-w-3xl text-lg text-gray-700">
-            以下是客户经常咨询的问题，如果您有其他疑问，欢迎随时联系我们
+          <p class="mx-auto mt-6 max-w-3xl text-xl text-amber-700">
+            以下是我们客户经常咨询的问题，希望能帮助您快速找到所需信息
           </p>
         </div>
 
-        <div class="mx-auto max-w-4xl">
+        <div class="mx-auto max-w-3xl">
           <Accordion :active-index="0">
             <AccordionTab v-for="(faq, index) in faqs" :key="index" :header="faq.question">
-              <p class="text-gray-700">
+              <p class="text-amber-700">
                 {{ faq.answer }}
               </p>
             </AccordionTab>
           </Accordion>
+        </div>
 
-          <div class="mt-8 text-center">
-            <p class="mb-4 text-gray-700">
-              还有其他问题？
+        <div class="mt-12 text-center">
+          <p class="mb-6 text-lg text-amber-700">
+            没有找到您想要的答案？请直接联系我们的客服团队
+          </p>
+          <Button
+            label="在线客服"
+            icon="pi pi-comments"
+            class="p-button-rounded custom-button"
+            @click="openChat"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- 社交媒体和订阅 -->
+    <section class="relative bg-amber-50 py-16">
+      <div class="mx-auto px-6 container">
+        <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+          <!-- 社交媒体 -->
+          <div>
+            <h2 class="relative mb-6 inline-block text-3xl text-amber-800 font-bold">
+              关注我们
+              <span class="absolute left-0 h-1 w-1/2 bg-amber-500 -bottom-2" />
+            </h2>
+            <p class="mb-8 text-lg text-amber-700">
+              关注我们的社交媒体，获取最新的产品信息、促销活动和行业资讯
             </p>
-            <Button label="联系客服" icon="pi pi-comments" class="border-blue-900 bg-blue-900" />
+
+            <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
+              <a href="#" class="flex flex-col transform items-center justify-center rounded-xl bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
+                <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full bg-amber-100">
+                  <i class="i-carbon-logo-wechat text-xl text-amber-600" />
+                </div>
+                <span class="text-amber-800 font-medium">微信</span>
+              </a>
+
+              <a href="#" class="flex flex-col transform items-center justify-center rounded-xl bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
+                <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full bg-amber-100">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Design Icons by Pictogrammers - https://github.com/Templarian/MaterialDesign/blob/master/LICENSE --><path fill-amber-600 d="M9.82 13.87c1.07 0 1.95.87 1.95 1.95a1.95 1.95 0 0 1-1.95 1.95c-1.08 0-1.95-.88-1.95-1.95c0-1.08.87-1.95 1.95-1.95M14.5 3.34l.68-.03c3.76 0 6.82 3.06 6.82 6.82l-.05.82l-1.19-.37l.02-.45c0-3.09-2.51-5.6-5.6-5.6l-.35.01zm.82 2.89c2.06.07 3.73 1.77 3.76 3.83l-1.24-.38c-.19-1.12-1.06-2-2.17-2.18zM2 15.41c-.03-.61.07-2.77 2.95-5.44c3.4-3.16 4.87-2.92 4.87-2.92s3.18-.3 1.24 3.41h.07c.47-.5 1.49-1.25 3.56-1.46c2.08-.21 2.08 1.5 1.81 2.7c1.88.94 3.06 2.33 3.06 3.88c0 2.82-3.93 5.11-8.78 5.11h-.28c-3.5 0-6.5-1.27-7.79-3.1c-.46-.62-.71-1.3-.71-2.01zm7.82-3.49c-3.23 0-5.85 1.75-5.85 3.9s2.62 3.9 5.85 3.9s5.85-1.75 5.85-3.9s-2.62-3.9-5.85-3.9" /></svg>
+                </div>
+                <span class="text-amber-800 font-medium">微博</span>
+              </a>
+
+              <a href="#" class="flex flex-col transform items-center justify-center rounded-xl bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
+                <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full bg-amber-100">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Design Icons by Pictogrammers - https://github.com/Templarian/MaterialDesign/blob/master/LICENSE --><path fill-amber-600 d="M3.18 13.54c.58-1.38 1.39-2.4 1.99-2.62c-.01-.8.14-1.3.39-1.7c0-.03-.06-.36.16-.77C5.87 4.85 8.21 2 12 2s6.13 2.85 6.28 6.45c.22.41.16.74.16.77c.25.4.4.9.39 1.7c.6.22 1.41 1.24 1.99 2.63c.75 1.76.87 3.45.27 3.75c-.41.2-1.06-.3-1.67-1.18c-.24.98-.84 1.88-1.69 2.59c.9.33 1.48.87 1.48 1.48c0 1-1.58 1.81-3.52 1.81c-1.76 0-3.19-.66-3.48-1.5h-.42c-.29.84-1.72 1.5-3.48 1.5c-1.94 0-3.52-.81-3.52-1.81c0-.61.58-1.15 1.48-1.48c-.85-.71-1.45-1.61-1.69-2.59c-.61.88-1.26 1.38-1.67 1.18c-.6-.3-.48-1.99.27-3.76" /></svg>
+                </div>
+                <span class="text-amber-800 font-medium">QQ</span>
+              </a>
+
+              <a href="#" class="flex flex-col transform items-center justify-center rounded-xl bg-white p-6 shadow-md transition-transform hover:scale-105 hover:shadow-lg">
+                <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full bg-amber-100">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from BoxIcons by Atisa - https://creativecommons.org/licenses/by/4.0/ --><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74a2.89 2.89 0 0 1 2.31-4.64a2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" fill-amber-600 /></svg>
+                </div>
+                <span class="text-amber-800 font-medium">抖音</span>
+              </a>
+            </div>
+
+            <div class="mt-8 rounded-xl bg-white p-6 shadow-md">
+              <div class="flex items-center">
+                <div class="mr-6 h-24 w-24 flex shrink-0 items-center justify-center rounded-lg bg-amber-100">
+                  <QrCode class="h-12 w-12 text-amber-600" />
+                </div>
+                <div>
+                  <h3 class="mb-2 text-xl text-amber-800 font-bold">
+                    扫码关注公众号
+                  </h3>
+                  <p class="text-amber-700">
+                    关注我们的官方微信公众号，获取更多优惠信息和行业资讯
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 订阅 -->
+          <div>
+            <h2 class="relative mb-6 inline-block text-3xl text-amber-800 font-bold">
+              订阅我们
+              <span class="absolute left-0 h-1 w-1/2 bg-amber-500 -bottom-2" />
+            </h2>
+            <p class="mb-8 text-lg text-amber-700">
+              订阅我们的电子邮件，定期获取产品更新、促销活动和行业新闻
+            </p>
+
+            <div class="rounded-2xl bg-white p-8 shadow-lg">
+              <h3 class="mb-4 text-xl text-amber-800 font-bold">
+                加入我们的邮件列表
+              </h3>
+              <p class="mb-6 text-amber-700">
+                我们会定期发送有关食品行业的最新资讯、产品更新和促销活动。我们承诺不会向您发送垃圾邮件。
+              </p>
+
+              <form class="space-y-4" @submit.prevent="subscribeNewsletter">
+                <div class="p-field">
+                  <label for="subscribe-name" class="mb-2 block text-amber-800 font-medium">姓名</label>
+                  <InputText id="subscribe-name" v-model="newsletter.name" class="custom-input w-full" />
+                </div>
+
+                <div class="p-field">
+                  <label for="subscribe-email" class="mb-2 block text-amber-800 font-medium">邮箱 <span class="text-red-500">*</span></label>
+                  <InputText id="subscribe-email" v-model="newsletter.email" class="custom-input w-full" />
+                </div>
+
+                <Button
+                  type="submit"
+                  label="订阅"
+                  icon="pi pi-envelope"
+                  class="p-button-rounded custom-button w-full"
+                  :loading="subscribing"
+                />
+              </form>
+            </div>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- 联系我们 CTA -->
-    <section class="from-blue-900 to-blue-800 bg-gradient-to-r px-4 py-16 text-white">
-      <div class="mx-auto max-w-7xl text-center">
-        <h2 class="mb-6 text-3xl font-bold">
-          准备开始合作？
-        </h2>
-        <p class="mx-auto mb-8 max-w-2xl text-lg opacity-90">
-          无论您是学校食堂、企业餐厅还是其他机构，我们都能为您提供专业的食品供应链解决方案
-        </p>
-        <div class="flex flex-wrap justify-center gap-4">
-          <Button
-            label="立即咨询" icon="pi pi-phone"
-            class="border-white bg-white text-blue-900 hover:bg-gray-100"
-          />
-          <Button
-            label="查看产品" icon="pi pi-shopping-bag" outlined
-            class="border-white text-white hover:bg-white/10"
-          />
-        </div>
-      </div>
-    </section>
   </MainLayout>
+  <!-- 成功提交消息对话框 -->
+  <Dialog v-model:visible="showSuccessDialog" modal header="提交成功" :style="{ width: '90%', maxWidth: '400px' }">
+    <div class="p-4 text-center">
+      <div class="mx-auto mb-4 h-16 w-16 flex items-center justify-center rounded-full bg-green-100">
+        <CheckCircle class="h-8 w-8 text-green-600" />
+      </div>
+      <h3 class="mb-2 text-xl text-amber-800 font-bold">
+        消息已发送
+      </h3>
+      <p class="mb-4 text-amber-700">
+        感谢您的留言，我们会尽快回复您！
+      </p>
+      <Button label="确定" class="p-button-rounded custom-button" @click="showSuccessDialog = false" />
+    </div>
+  </Dialog>
+
+  <!-- 订阅成功对话框 -->
+  <Dialog v-model:visible="showSubscribeDialog" modal header="订阅成功" :style="{ width: '90%', maxWidth: '400px' }">
+    <div class="p-4 text-center">
+      <div class="mx-auto mb-4 h-16 w-16 flex items-center justify-center rounded-full bg-green-100">
+        <CheckCircle class="h-8 w-8 text-green-600" />
+      </div>
+      <h3 class="mb-2 text-xl text-amber-800 font-bold">
+        订阅成功
+      </h3>
+      <p class="mb-4 text-amber-700">
+        感谢您的订阅，我们会定期向您发送最新资讯！
+      </p>
+      <Button label="确定" class="p-button-rounded custom-button" @click="showSubscribeDialog = false" />
+    </div>
+  </Dialog>
 </template>
 
 <style scoped>
-/* 自定义样式 */
-:deep(.p-inputtext:focus) {
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 1px #0ea5e9;
+/* 自定义PrimeVue组件样式 */
+:deep(.p-dropdown.p-invalid) {
+  border-color: #ef4444;
 }
 
-:deep(.p-dropdown:not(.p-disabled).p-focus) {
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 1px #0ea5e9;
+:deep(.p-inputtext.p-invalid) {
+  border-color: #ef4444;
 }
 
-:deep(.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-focus) {
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 1px #0ea5e9;
+:deep(.p-textarea.p-invalid) {
+  border-color: #ef4444;
 }
 
-:deep(.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight) {
-  background: #0ea5e9;
-  border-color: #0ea5e9;
+:deep(.p-accordion .p-accordion-header .p-accordion-header-link) {
+  background-color: #fff;
+  color: #92400e;
+  border-color: #fef3c7;
 }
 
 :deep(.p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link) {
-  background: #f0f9ff;
-  border-color: #e0f2fe;
-  color: #0ea5e9;
+  background-color: #fef3c7;
+  color: #92400e;
+  border-color: #f59e0b;
 }
 
-:deep(.p-accordion .p-accordion-header:not(.p-disabled) .p-accordion-header-link:focus) {
-  box-shadow: 0 0 0 1px #0ea5e9;
+:deep(.p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover .p-accordion-header-link) {
+  background-color: #fef3c7;
+  color: #92400e;
 }
 
-:deep(.p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link) {
-  background: #f0f9ff;
-  border-color: #e0f2fe;
+:deep(.p-accordion .p-accordion-content) {
+  border-color: #fef3c7;
+  padding: 1.25rem;
 }
 
-/* 地图标记动画 */
-@keyframes pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(30, 58, 138, 0.7);
+:deep(.p-dialog-header) {
+  background-color: #d97706;
+  color: white;
+}
+
+:deep(.p-dialog-header-close) {
+  color: white;
+}
+
+/* 地图样式 */
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(30, 58, 138, 0);
-  }
-
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(30, 58, 138, 0);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.animate-pulse {
-  animation: pulse 2s infinite;
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .map-container {
+    height: 300px;
+  }
 }
 </style>
