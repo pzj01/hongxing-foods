@@ -28,7 +28,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'PLT-CHICKENLEG-001',
     tags: ['鸡肉', '高蛋白', '烧烤'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -90,7 +90,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PlasticBag,
     sku: 'PLT-CHICKENBREAST-002',
     tags: ['低脂', '健身', '鸡肉'],
-    date: new Date('2025-05-03'),
+    date: new Date('2025-01-03'),
     shelfLife: '6个月',
     storageMethod: '冷藏保存，0-4℃',
     rawMaterials: [
@@ -152,7 +152,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'PLT-CHICKENWINGROOT-003',
     tags: ['鸡肉', '烧烤', '小吃'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -214,7 +214,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PlasticBag,
     sku: 'PLT-CHICKENFEET-004',
     tags: ['鸡肉', '卤味', '小吃'],
-    date: new Date('2025-05-02'),
+    date: new Date('2025-01-02'),
     shelfLife: '9个月',
     storageMethod: '常温保存，避免阳光直射',
     rawMaterials: [
@@ -286,7 +286,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'PLT-WILLOWLEAFCHICKEN-005',
     tags: ['鸡肉', '快炒', '烧烤'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -348,7 +348,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PaperBag,
     sku: 'PLT-CRISPYWILLOWLEAF-006',
     tags: ['鸡肉', '炸制', '零食'],
-    date: new Date('2025-05-01'),
+    date: new Date('2025-01-01'),
     shelfLife: '6个月',
     storageMethod: '常温保存，干燥通风处',
     rawMaterials: [
@@ -420,7 +420,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'PLT-SALTBAKEDWING-007',
     tags: ['鸡肉', '盐焗', '小吃'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '9个月',
     storageMethod: '常温保存，避免高温',
     rawMaterials: [
@@ -492,7 +492,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PlasticBag,
     sku: 'PLT-SICHUANCHICKENSTRIP-008',
     tags: ['鸡肉', '麻辣', '烧烤'],
-    date: new Date('2025-05-03'),
+    date: new Date('2025-01-03'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -564,7 +564,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PaperBag,
     sku: 'PLT-SPICYCOMPANIONWING-009',
     tags: ['鸡肉', '辣味', '小吃'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '6个月',
     storageMethod: '常温保存，干燥处',
     rawMaterials: [
@@ -636,7 +636,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'PLT-ORLEANSBREASTSTRIP-010',
     tags: ['鸡肉', '香辣', '烧烤'],
-    date: new Date('2025-05-03'),
+    date: new Date('2025-01-03'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -708,7 +708,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PaperBag,
     sku: 'PLT-CHICKENBONEROLL-011',
     tags: ['鸡肉', '创意', '小吃'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '6个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -780,7 +780,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PlasticBag,
     sku: 'PLT-DUCKCOLLARBONE-012',
     tags: ['鸭肉', '卤味', '烧烤'],
-    date: new Date('2025-05-02'),
+    date: new Date('2025-01-02'),
     shelfLife: '9个月',
     storageMethod: '常温保存，避免阳光直射',
     rawMaterials: [
@@ -852,7 +852,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'PLT-WHOLEDUCK-013',
     tags: ['鸭肉', '烤鸭', '炖汤'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -914,7 +914,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'MT-BLACKPEPPERPORKCUBE-014',
     tags: ['猪肉', '黑胡椒', '炒菜'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -990,7 +990,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PlasticBag,
     sku: 'MT-BLACKPEPPERPORKSTRIP-015',
     tags: ['猪肉', '黑胡椒', '烧烤'],
-    date: new Date('2025-05-03'),
+    date: new Date('2025-01-03'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -1066,7 +1066,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'MT-PORKBELYSKEWER-016',
     tags: ['猪肉', '烧烤', '五花肉'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -1142,7 +1142,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'MT-BEEFMETBALL-017',
     tags: ['牛肉', '火锅', '潮汕'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -1218,7 +1218,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PaperBag,
     sku: 'MT-FRIEDEGMEATROLL-018',
     tags: ['猪肉', '鸡蛋', '炸制'],
-    date: new Date('2025-05-03'),
+    date: new Date('2025-01-03'),
     shelfLife: '6个月',
     storageMethod: '常温保存，干燥通风处',
     rawMaterials: [
@@ -1304,7 +1304,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'FS-FUZHOUFISHBALL-019',
     tags: ['鱼丸', '火锅', '福州'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -1390,7 +1390,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PlasticBag,
     sku: 'FS-FRESHWATERFISHBALL-020',
     tags: ['鱼丸', '火锅', '清汤'],
-    date: new Date('2025-05-03'),
+    date: new Date('2025-01-03'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -1466,7 +1466,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PaperBag,
     sku: 'FS-CRABSTICKPATTY-021',
     tags: ['鱼糜', '蟹肉', '油炸'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '6个月',
     storageMethod: '常温保存，干燥通风处',
     rawMaterials: [
@@ -1552,7 +1552,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PlasticBag,
     sku: 'FS-LOBSTERFLAVORBALL-022',
     tags: ['鱼糜', '龙虾味', '火锅'],
-    date: new Date('2025-05-03'),
+    date: new Date('2025-01-03'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -1638,7 +1638,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PlasticBag,
     sku: 'FS-TEMPURA-023',
     tags: ['鱼糜', '甜味', '烧烤'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -1724,7 +1724,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'SPM-HOTDOG-024',
     tags: ['热狗', '猪肉', '烧烤'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '6个月',
     storageMethod: '冷藏保存，0-4℃',
     rawMaterials: [
@@ -1810,7 +1810,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PlasticBag,
     sku: 'SPM-YUANXIANGHOTDOG-025',
     tags: ['热狗', '猪肉', '煎炸'],
-    date: new Date('2025-05-03'),
+    date: new Date('2025-01-03'),
     shelfLife: '6个月',
     storageMethod: '冷藏保存，0-4℃',
     rawMaterials: [
@@ -1896,7 +1896,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PaperBag,
     sku: 'SPM-CRISPYSUSAGE-026',
     tags: ['香肠', '猪肉', '脆皮'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '6个月',
     storageMethod: '常温保存，干燥通风处',
     rawMaterials: [
@@ -1982,7 +1982,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PlasticBag,
     sku: 'SPM-RAINBOWSTICK-027',
     tags: ['鸡肉', '彩色', '儿童'],
-    date: new Date('2025-05-03'),
+    date: new Date('2025-01-03'),
     shelfLife: '6个月',
     storageMethod: '冷藏保存，0-4℃',
     rawMaterials: [
@@ -2068,7 +2068,7 @@ export const products: Product[] = [
     packagingType: PackagingType.Vacuum,
     sku: 'SF-LIONSHEAD-028',
     tags: ['猪肉', '红烧', '传统'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '12个月',
     storageMethod: '冷冻保存，-18℃以下',
     rawMaterials: [
@@ -2154,7 +2154,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PlasticBag,
     sku: 'SF-EMPERORBONE-029',
     tags: ['猪骨', '卤味', '烧烤'],
-    date: new Date('2025-05-03'),
+    date: new Date('2025-01-03'),
     shelfLife: '9个月',
     storageMethod: '常温保存，避免阳光直射',
     rawMaterials: [
@@ -2230,7 +2230,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PaperBag,
     sku: 'SF-GLUTENSKEWER-030',
     tags: ['面筋', '素食', '烧烤'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '6个月',
     storageMethod: '常温保存，干燥通风处',
     rawMaterials: [
@@ -2316,7 +2316,7 @@ export const products: Product[] = [
     packagingType: PackagingType.PaperBag,
     sku: 'SF-MINGARLICGRAIN-031',
     tags: ['鱼糜', '蒜香', '福建', '零食'],
-    date: new Date('2025-05-04'),
+    date: new Date('2025-01-04'),
     shelfLife: '6个月',
     storageMethod: '常温保存，干燥通风处',
     rawMaterials: [

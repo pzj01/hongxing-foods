@@ -5,32 +5,32 @@ import { Check, ChevronDown, Clock, Mail, MapPin, Phone } from 'lucide-vue-next'
 const services = [
   {
     title: '预包装食品',
-    image: '/placeholder.svg?height=400&width=600',
+    image: '/Pre-packagedFood.jpg',
     description: '提供各类优质预包装食品，确保食品安全与新鲜度，方便学校食堂快速供应。',
   },
   {
     title: '散装食品',
-    image: '/placeholder.svg?height=400&width=600',
+    image: '/BulkFood.jpg',
     description: '多种散装食品供应，可根据客户需求定制采购方案，满足大型食堂的批量需求。',
   },
   {
     title: '乳制品',
-    image: '/placeholder.svg?height=400&width=600',
+    image: '/DairyProducts.jpg',
     description: '新鲜乳制品配送，严格控制冷链运输，保证学生饮用奶及其他乳制品的品质。',
   },
   {
     title: '冷冻存储服务',
-    image: '/placeholder.svg?height=400&width=600',
+    image: '/IceCube.jpg',
     description: '专业冷冻存储设施，为客户提供食材的临时或长期存储解决方案，确保食材新鲜度。',
   },
   {
     title: '水产品',
-    image: '/placeholder.svg?height=400&width=600',
+    image: 'AquaticProducts.jpg',
     description: '新鲜水产品供应，从源头把控品质，提供多种海鲜和淡水鱼类，满足不同烹饪需求。',
   },
   {
     title: '肉类批发',
-    image: '/placeholder.svg?height=400&width=600',
+    image: '/meat.jpg',
     description: '优质肉类批发服务，提供猪肉、牛肉、禽类等多种选择，可按需定制分割和包装。',
   },
 ]
@@ -159,12 +159,12 @@ function scrollToServices() {
               <div class="flex flex-wrap translate-y-0 transform gap-4 opacity-100 transition-all duration-700 delay-1000">
                 <Button
                   label="了解我们的服务"
-                  class="p-button-rounded custom-button-large"
+                  class="custom-button-large p-button-rounded"
                   @click="scrollToServices"
                 />
                 <Button
                   label="联系我们"
-                  class="p-button-rounded p-button-outlined custom-button-outline-large"
+                  class="p-button-rounded custom-button-outline-large p-button-outlined"
                   @click="$router.push('/contact')"
                 />
               </div>
@@ -221,7 +221,7 @@ function scrollToServices() {
               class="relative aspect-[4/5] transform overflow-hidden rounded-2xl transition-transform duration-500"
               :class="{ 'scale-95': activeService !== index && activeService !== null }"
             >
-              <!-- <img :src="service.image" :alt="service.title" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"> -->
+              <img :src="service.image" :alt="service.title" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110">
               <div class="absolute inset-0 from-amber-900 to-transparent bg-gradient-to-t opacity-80" />
 
               <div class="absolute inset-0 flex flex-col justify-end p-8">
@@ -233,7 +233,7 @@ function scrollToServices() {
                 </p>
                 <Button
                   label="了解更多"
-                  class="p-button-text p-button-rounded custom-button-text mt-4 translate-y-4 transform self-start opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
+                  class="p-button-rounded custom-button-text p-button-text mt-4 translate-y-4 transform self-start opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
                   icon="pi pi-arrow-right"
                   icon-pos="right"
                 />
