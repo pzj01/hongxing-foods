@@ -51,7 +51,7 @@ import { CategoryList } from '~/types'
           </h4>
           <ul class="space-y-2">
             <li v-for="category in CategoryList" :key="category">
-              <span class="text-amber-200">{{ category }}</span>
+              <a :href="`/products?category=${category}`" class="text-amber-200">{{ category }}</a>
             </li>
           </ul>
         </div>
@@ -67,7 +67,7 @@ import { CategoryList } from '~/types'
             </li>
             <li class="flex items-start">
               <Phone class="mr-2 mt-0.5 h-5 w-5 text-amber-300" />
-              <span class="text-amber-200">0799-0928987</span>
+              <span class="text-amber-200">0799-6880989</span>
             </li>
             <li class="flex items-start">
               <Mail class="mr-2 mt-0.5 h-5 w-5 text-amber-300" />

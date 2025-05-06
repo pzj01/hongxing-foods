@@ -460,7 +460,7 @@ const partners = [
                   <Button
                     label="查看详情"
                     icon="pi pi-info-circle"
-                    class="p-button-rounded custom-button-outline p-button-outlined w-full"
+                    class="custom-button-outline p-button-rounded p-button-outlined w-full"
                     @click="showCertificateDialog(slotProps.data)"
                   />
                 </div>
@@ -501,7 +501,7 @@ const partners = [
     </section>
 
     <!-- 团队介绍 -->
-    <section class="relative bg-white py-16">
+    <section id="team" class="relative bg-white py-16">
       <div class="mx-auto px-6 container">
         <div class="mb-16 text-center">
           <h2 class="relative mb-4 inline-block text-3xl text-amber-800 font-bold md:text-4xl">
@@ -515,9 +515,9 @@ const partners = [
 
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-4 md:grid-cols-2">
           <div v-for="(member, index) in teamMembers" :key="index" class="group">
-            <div class="relative overflow-hidden rounded-2xl shadow-lg">
+            <div class="relative overflow-hidden rounded-2xl shadow-lg" h-56>
               <!-- <img :src="member.photo" :alt="member.name" class="h-80 w-full object-cover transition-transform duration-500 group-hover:scale-110"> -->
-              <div class="absolute inset-0 from-amber-900 to-transparent bg-gradient-to-t opacity-70" />
+              <div class="absolute inset-0 from-amber-500 to-amber-800 bg-gradient-to-br opacity-70" />
               <div class="absolute bottom-0 left-0 right-0 transform p-6 transition-transform duration-500 group-hover:-translate-y-2">
                 <h3 class="mb-1 text-xl text-white font-bold">
                   {{ member.name }}

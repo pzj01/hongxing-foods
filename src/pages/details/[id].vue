@@ -567,7 +567,7 @@ function downloadTestReport() {
                         </p>
                       </div>
                       <Button
-                        icon="pi pi-download"
+                        icon="pi pi-eye"
                         class="p-button-rounded p-button-text custom-button-text ml-auto"
                         @click="downloadTestReport"
                       />

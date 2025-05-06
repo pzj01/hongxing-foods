@@ -182,9 +182,9 @@ function subscribeNewsletter() {
               联系电话
             </h3>
             <p class="text-center text-amber-700">
-              客服热线: 0799-XXXXXXXX<br>
-              业务咨询: 0799-XXXXXXXX<br>
-              手机: 138-XXXX-XXXX
+              客服热线: 0799-6880989<br>
+              业务咨询: 18279966098<br>
+              手机: 18107994717
             </p>
           </div>
 

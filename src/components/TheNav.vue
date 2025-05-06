@@ -23,14 +23,14 @@ function toggleMenu() {
 }
 
 // 导航状态
-const scrolled = ref(false)
+// const scrolled = ref(false)
 
 // 监听滚动
-function handleScroll() {
-  scrolled.value = window.scrollY > 50
-}
+// function handleScroll() {
+//   scrolled.value = window.scrollY > 50
+// }
 
-useEventListener(window, 'scroll', handleScroll)
+// useEventListener(window, 'scroll', handleScroll)
 
 // const keywordValue = inject<string>('keyword', '')
 
@@ -47,14 +47,14 @@ useEventListener(window, 'scroll', handleScroll)
 
 <template>
   <!-- 导航栏 -->
-  <header class="fixed left-0 right-0 top-0 z-50 transition-all duration-300" :class="{ 'bg-white/90 backdrop-blur-md shadow-md': scrolled, 'bg-transparent': !scrolled }">
+  <header class="___ fixed left-0 right-0 top-0 z-50 bg-amber-700 text-white transition-all duration-300">
     <div class="mx-auto px-6 py-4 container">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
           <div class="h-12 w-12 flex rotate-12 transform items-center justify-center rounded-full bg-amber-500">
             <UtensilsCrossed class="h-6 w-6 text-white" />
           </div>
-          <h1 class="text-2xl font-bold" :class="scrolled ? 'text-amber-800' : 'text-white'">
+          <h1 class="text-2xl font-bold">
             宏星食品
           </h1>
         </div>
@@ -64,13 +64,12 @@ useEventListener(window, 'scroll', handleScroll)
             v-for="(item, index) in navItems" :key="index"
             :to="item.link"
             class="nav-link relative text-lg font-medium transition-colors duration-300"
-            :class="scrolled ? 'text-amber-800' : 'text-white'"
             @mouseenter="hoveredNav = index"
             @mouseleave="hoveredNav = null"
           >
             {{ item.label }}
             <span
-              class="absolute bottom-0 left-0 h-0.5 w-full scale-x-0 transform bg-amber-500 transition-transform duration-300"
+              class="absolute bottom-0 left-0 h-0.5 w-full scale-x-0 transform bg-white transition-transform duration-300"
               :class="{ 'scale-x-100': hoveredNav === index }"
             />
           </RouterLink>
@@ -88,7 +87,6 @@ useEventListener(window, 'scroll', handleScroll)
         <Button
           icon="pi pi-bars"
           class="p-button-rounded p-button-text lg:hidden!"
-          :class="scrolled ? 'text-amber-800' : 'text-white'"
           @click="toggleMenu"
         />
       </div>

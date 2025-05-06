@@ -159,12 +159,12 @@ function scrollToServices() {
               <div class="flex flex-wrap translate-y-0 transform gap-4 opacity-100 transition-all duration-700 delay-1000">
                 <Button
                   label="了解我们的服务"
-                  class="custom-button-large p-button-rounded"
+                  class="p-button-rounded custom-button-large"
                   @click="scrollToServices"
                 />
                 <Button
                   label="联系我们"
-                  class="p-button-rounded custom-button-outline-large p-button-outlined"
+                  class="p-button-rounded p-button-outlined custom-button-outline-large"
                   @click="$router.push('/contact')"
                 />
               </div>
@@ -233,7 +233,7 @@ function scrollToServices() {
                 </p>
                 <Button
                   label="了解更多"
-                  class="p-button-rounded custom-button-text p-button-text mt-4 translate-y-4 transform self-start opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
+                  class="p-button-rounded p-button-text custom-button-text mt-4 translate-y-4 transform self-start opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
                   icon="pi pi-arrow-right"
                   icon-pos="right"
                 />
@@ -333,12 +333,14 @@ function scrollToServices() {
               label="了解更多"
               icon="pi pi-info-circle"
               class="p-button-rounded custom-button mr-4"
+              @click="$router.push('/about')"
             />
 
             <Button
               label="我们的团队"
               icon="pi pi-users"
               class="p-button-rounded p-button-outlined custom-button-outline"
+              @click="$router.push('/about#team')"
             />
           </div>
         </div>

@@ -10,7 +10,7 @@ const router = useRouter()
 const categories = CategoryList
 
 // 筛选和搜索
-const selectedCategory = ref('all')
+const selectedCategory = ref(router.currentRoute.value.query.category || 'all')
 const searchQuery = ref('')
 const sortOption = ref({ name: '默认排序', value: 'default' })
 
@@ -60,8 +60,7 @@ const filteredProducts = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value
     result = result.filter(product =>
-      product.name.includes(query)
-      || product.description.includes(query),
+      product.name.includes(query),
     )
   }
 
