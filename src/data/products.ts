@@ -61,7 +61,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/鸡腿/image.png',
-    testReport: 'TR-PLT-001',
+    testReport: '/products/奥尔良腿排/test.png',
     productionLicense: 'SC123456789',
   },
   {
@@ -319,7 +319,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/柳叶鸡/image.avif',
-    testReport: 'TR-PLT-005',
+    testReport: '/products/柳叶鸡/test.png',
     productionLicense: 'SC789123456',
   },
   {
@@ -391,7 +391,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/柳叶脆香鸡/image.jpg',
-    testReport: 'TR-PLT-006',
+    testReport: '/products/柳叶脆香鸡/test.png',
     productionLicense: 'SC123456789',
   },
   {
@@ -463,7 +463,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/盐焗鸡翅/image.jpg',
-    testReport: 'TR-PLT-007',
+    testReport: '/products/盐焗鸡翅/test.png',
     productionLicense: 'SC987654321',
   },
   {
@@ -535,7 +535,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/川香鸡柳/image.jpg',
-    testReport: 'TR-PLT-008',
+    testReport: '/products/川香鸡柳/test.png',
     productionLicense: 'SC123987456',
   },
   {
@@ -961,7 +961,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/黑椒肉粒/image.jpg',
-    testReport: 'TR-MT-014',
+    testReport: '/products/黑椒肉粒/test.png',
     productionLicense: 'SC123456789',
   },
   {
@@ -1037,7 +1037,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/黑椒肉柳/image.webp',
-    testReport: 'TR-MT-015',
+    testReport: '/products/黑椒肉柳/test.png',
     productionLicense: 'SC987654321',
   },
   {
@@ -1113,7 +1113,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/五花肉串/image.jpg',
-    testReport: 'TR-MT-016',
+    testReport: '/products/五花肉串/test.png',
     productionLicense: 'SC123987456',
   },
   {
@@ -1189,7 +1189,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/撒尿牛丸/image.jpg',
-    testReport: 'TR-MT-017',
+    testReport: '/products/撒尿牛丸/test.png',
     productionLicense: 'SC456789123',
   },
   {
@@ -1361,7 +1361,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/福州鱼丸/image.png',
-    testReport: 'TR-FS-019',
+    testReport: '/products/福州鱼丸/test.png',
     productionLicense: 'SC123456789',
   },
   {
@@ -1437,7 +1437,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/淡水丸/image.jpg',
-    testReport: 'TR-FS-020',
+    testReport: '/products/淡水丸/test.png',
     productionLicense: 'SC987654321',
   },
   {
@@ -1523,7 +1523,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/夹心蟹排/image.jpg',
-    testReport: 'TR-FS-021',
+    testReport: '/products/夹心蟹排/test.png',
     productionLicense: 'SC123987456',
   },
   {
@@ -1609,7 +1609,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/龙虾味球/image.jpg',
-    testReport: 'TR-FS-022',
+    testReport: '/products/龙虾味球/test.png',
     productionLicense: 'SC456789123',
   },
   {
@@ -1695,7 +1695,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/甜不辣/image.jpg',
-    testReport: 'TR-FS-023',
+    testReport: '/products/甜不辣/test.png',
     productionLicense: 'SC789123456',
   },
   {
@@ -1781,7 +1781,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/热狗/image.webp',
-    testReport: 'TR-SPM-024',
+    testReport: '/products/热狗/test.png',
     productionLicense: 'SC123456789',
   },
   {
@@ -1867,7 +1867,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/源香热狗/image.jpg',
-    testReport: 'TR-SPM-025',
+    testReport: '/products/源香热狗/test.png',
     productionLicense: 'SC987654321',
   },
   {
@@ -1953,7 +1953,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/脆皮肠/image.jpg',
-    testReport: 'TR-SPM-026',
+    testReport: '/products/脆皮肠/test.png',
     productionLicense: 'SC123987456',
   },
   {
@@ -2039,7 +2039,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/彩虹棒/image.jpg',
-    testReport: 'TR-SPM-027',
+    testReport: '/products/彩虹棒/test.png',
     productionLicense: 'SC456789123',
   },
   {
@@ -2125,7 +2125,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/狮子头/image.jpg',
-    testReport: 'TR-SF-028',
+    testReport: '/products/狮子头/test.png',
     productionLicense: 'SC123456789',
   },
   {
@@ -2201,7 +2201,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/帝王骨/image.jpg',
-    testReport: 'TR-SF-029',
+    testReport: '/products/帝王骨/test.png',
     productionLicense: 'SC987654321',
   },
   {
@@ -2287,14 +2287,14 @@ export const products: Product[] = [
       },
     ],
     image: '/products/面筋串/image.jpg',
-    testReport: 'TR-SF-030',
+    testReport: '/products/面筋串/test.png',
     productionLicense: 'SC123987456',
   },
   {
     id: 31,
     name: '闽式蒜香粒粒吉',
     description: '福建特色蒜香小吃，鱼糜与蒜香调料混合制成颗粒状，油炸后外酥里嫩，适合零食或下酒菜。',
-    category: Category.SpecialtyFoods,
+    category: Category.PoultryProducts,
     price: 12.0,
     unit: Unit.BOX,
     weight: 200,
@@ -2373,7 +2373,7 @@ export const products: Product[] = [
       },
     ],
     image: '/products/闽式蒜香粒粒吉/image.jpg',
-    testReport: 'TR-SF-031',
+    testReport: '/products/闽式蒜香粒粒吉/test.png',
     productionLicense: 'SC789123456',
   },
 ]

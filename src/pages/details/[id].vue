@@ -79,13 +79,8 @@ function downloadProductSheet() {
 }
 
 // 下载检测报告
-function downloadTestReport() {
-  toast.add({
-    severity: 'info',
-    summary: '下载开始',
-    detail: '产品检测报告下载已开始',
-    life: 3000,
-  })
+function downloadTestReport(url?: string) {
+  url && open(url, '_blank')
 }
 </script>
 
@@ -273,7 +268,7 @@ function downloadTestReport() {
             <div class="flex flex-wrap gap-3">
               <Button
                 icon="pi pi-heart"
-                class="p-button-rounded p-button-text custom-button-text"
+                class="custom-button-text p-button-rounded p-button-text"
                 @click="addToFavorites"
               />
               <Button
@@ -562,14 +557,14 @@ function downloadTestReport() {
                         <p class="text-amber-800 font-medium">
                           产品检测报告
                         </p>
-                        <p class="text-sm text-amber-700">
-                          {{ product.testReport || '报告编号: JCBG-2023-12345' }}
-                        </p>
+                        <!-- <p class="text-sm text-amber-700">
+                          {{ `JCBG-${(Math.random() * Math.E).toString(16).slice(2, 8)}` }}
+                        </p> -->
                       </div>
                       <Button
                         icon="pi pi-eye"
                         class="p-button-rounded p-button-text custom-button-text ml-auto"
-                        @click="downloadTestReport"
+                        @click="downloadTestReport(product.testReport)"
                       />
                     </div>
                   </div>
