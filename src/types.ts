@@ -82,19 +82,23 @@ export interface Product extends Item {
 }
 
 export enum Category {
-  PoultryProducts = '禽类制品',
-  MeatProducts = '肉类制品',
-  FishAndSeafoodProducts = '鱼糜及水产制品',
-  Oil = '粮油调料',
-  SpecialtyFoods = '其他特色食品',
+  PoultryProducts = '禽肉类',
+  MeatProducts = '肉类',
+  VegetableProducts = '蔬菜类',
+  Seasoning = '调味料类',
+  Oil = '粮油类',
+  Breakfast = '早餐类',
+  Other = '其他类',
 }
 
 export const CategoryList: Category[] = [
-  Category.PoultryProducts,
   Category.MeatProducts,
-  Category.FishAndSeafoodProducts,
+  Category.PoultryProducts,
+  Category.VegetableProducts,
+  Category.Seasoning,
   Category.Oil,
-  Category.SpecialtyFoods,
+  // Category.Breakfast,
+  // Category.Other,
 ]
 
 export enum PackagingType {

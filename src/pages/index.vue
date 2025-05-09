@@ -146,9 +146,9 @@ function scrollToServices() {
           <div class="order-2 lg:order-1">
             <div class="relative">
               <h1 class="hero-text mb-6 text-5xl text-white font-bold leading-tight md:text-7xl">
-                <span class="block translate-y-0 transform opacity-100 transition-all duration-700 delay-300">新鲜食材</span>
-                <span class="block translate-y-0 transform opacity-100 transition-all duration-700 delay-500">优质配送</span>
-                <span class="block translate-y-0 transform text-amber-300 opacity-100 transition-all duration-700 delay-700">安全保障</span>
+                <span class="block translate-y-0 transform transition-all">新鲜食材</span>
+                <span class="block translate-y-0 transform transition-all">优质配送</span>
+                <span class="block translate-y-0 transform text-amber-300 transition-all">安全保障</span>
               </h1>
 
               <p class="mb-10 max-w-xl translate-y-0 transform text-xl text-white/90 opacity-100 transition-all duration-700 delay-900">
@@ -159,12 +159,12 @@ function scrollToServices() {
               <div class="flex flex-wrap translate-y-0 transform gap-4 opacity-100 transition-all duration-700 delay-1000">
                 <Button
                   label="了解我们的服务"
-                  class="p-button-rounded custom-button-large"
+                  class="custom-button-large p-button-rounded"
                   @click="scrollToServices"
                 />
                 <Button
                   label="联系我们"
-                  class="p-button-rounded p-button-outlined custom-button-outline-large"
+                  class="p-button-rounded custom-button-outline-large p-button-outlined"
                   @click="$router.push('/contact')"
                 />
               </div>
@@ -233,7 +233,7 @@ function scrollToServices() {
                 </p>
                 <Button
                   label="了解更多"
-                  class="p-button-rounded p-button-text custom-button-text mt-4 translate-y-4 transform self-start opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
+                  class="p-button-rounded custom-button-text p-button-text mt-4 translate-y-4 transform self-start opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
                   icon="pi pi-arrow-right"
                   icon-pos="right"
                 />
@@ -646,13 +646,6 @@ function scrollToServices() {
 
 .animate-spin-slow {
   animation: spin-slow 30s linear infinite;
-}
-
-.hero-text span {
-  display: block;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.7s ease;
 }
 
 .hero-text span.show {
