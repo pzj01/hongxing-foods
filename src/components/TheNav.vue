@@ -47,7 +47,7 @@ function toggleMenu() {
 
 <template>
   <!-- 导航栏 -->
-  <header class="___ fixed left-0 right-0 top-0 z-50 bg-amber-700 text-white transition-all duration-300">
+  <header class="fixed left-0 right-0 top-0 z-500 bg-amber-700 text-white transition-all duration-300">
     <div class="mx-auto px-6 py-4 container">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
