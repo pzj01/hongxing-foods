@@ -93,7 +93,7 @@ export const DEFAULT_PURCHASE: Purchase[] = [
   {
     id: 1,
     supplier_id: 1,
-    product_id: 1,
+    product_id: 32,
     date: new Date(),
     quantity: 10,
     unit_price: 5,
@@ -102,7 +102,7 @@ export const DEFAULT_PURCHASE: Purchase[] = [
   {
     id: 2,
     supplier_id: 2,
-    product_id: 2,
+    product_id: 33,
     date: new Date(),
     quantity: 5,
     unit_price: 10,
@@ -111,7 +111,7 @@ export const DEFAULT_PURCHASE: Purchase[] = [
   {
     id: 3,
     supplier_id: 1,
-    product_id: 3,
+    product_id: 34,
     date: new Date(),
     quantity: 15,
     unit_price: 7,

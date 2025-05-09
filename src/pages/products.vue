@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Check, CheckCircle, Search } from 'lucide-vue-next'
 import { products } from '~/data/products'
-import { CategoryList } from '~/types'
+import { Category, CategoryList } from '~/types'
 
 // 路由
 const router = useRouter()
@@ -10,7 +10,7 @@ const router = useRouter()
 const categories = CategoryList
 
 // 筛选和搜索
-const selectedCategory = ref(router.currentRoute.value.query.category || 'all')
+const selectedCategory = ref(router.currentRoute.value.query.category || Category.MeatProducts)
 const searchQuery = ref('')
 const sortOption = ref({ name: '默认排序', value: 'default' })
 
@@ -300,7 +300,7 @@ function contactSales() {
                   label="查看详情"
                   icon="pi pi-arrow-right"
                   icon-pos="right"
-                  class="p-button-rounded custom-button"
+                  class="custom-button p-button-rounded"
                   @click="viewProductDetails(product.id)"
                 />
               </div>

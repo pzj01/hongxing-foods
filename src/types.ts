@@ -85,7 +85,7 @@ export enum Category {
   PoultryProducts = '禽类制品',
   MeatProducts = '肉类制品',
   FishAndSeafoodProducts = '鱼糜及水产制品',
-  SausagesAndProcessedMeat = '香肠及加工肉制品',
+  Oil = '粮油调料',
   SpecialtyFoods = '其他特色食品',
 }
 
@@ -93,11 +93,12 @@ export const CategoryList: Category[] = [
   Category.PoultryProducts,
   Category.MeatProducts,
   Category.FishAndSeafoodProducts,
-  Category.SausagesAndProcessedMeat,
+  Category.Oil,
   Category.SpecialtyFoods,
 ]
 
 export enum PackagingType {
+  Bottle = '瓶装',
   Vacuum = '真空包装',
   Compressed = '压缩包装',
   PlasticBag = '塑料袋装',
@@ -126,6 +127,7 @@ export enum WeightUnit {
 }
 
 export const PackagingTypeList = [
+  PackagingType.Bottle,
   PackagingType.Compressed,
   PackagingType.PaperBag,
   PackagingType.PlasticBag,
