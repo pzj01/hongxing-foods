@@ -46,7 +46,7 @@ function formatDate(date: Date) {
 }
 
 // 相关产品
-const relatedProducts = ref(products.filter(p => p.category === product.value.category).slice(0, 4))
+const relatedProducts = ref(products.filter(p => p.id !== product.value.id && p.category === product.value.category).slice(0, 4))
 
 // 查看产品详情
 function viewProductDetails(id: number) {
