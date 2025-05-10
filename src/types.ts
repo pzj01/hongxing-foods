@@ -88,7 +88,7 @@ export enum Category {
   Seasoning = '调味料类',
   Oil = '粮油类',
   Breakfast = '早餐类',
-  Other = '其他类',
+  Other = '其它类',
 }
 
 export const CategoryList: Category[] = [
