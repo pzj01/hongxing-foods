@@ -97,8 +97,8 @@ export const CategoryList: Category[] = [
   Category.VegetableProducts,
   Category.Seasoning,
   Category.Oil,
-  // Category.Breakfast,
-  // Category.Other,
+  Category.Breakfast,
+  Category.Other,
 ]
 
 export enum PackagingType {
